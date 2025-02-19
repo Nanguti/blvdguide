@@ -5,7 +5,10 @@ import * as SliderPrimitive from "@radix-ui/react-slider";
 import { cn } from "@/lib/utils";
 
 interface RangeSliderProps
-  extends Omit<SliderPrimitive.SliderProps, "value" | "onValueChange"> {
+  extends Omit<
+    SliderPrimitive.SliderProps,
+    "value" | "onValueChange" | "onChange"
+  > {
   formatLabel?: (value: number) => string;
   value: [number, number];
   onChange: (value: [number, number]) => void;
