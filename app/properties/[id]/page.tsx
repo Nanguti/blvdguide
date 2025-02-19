@@ -1,5 +1,3 @@
-"use client";
-
 import { useQuery } from "@tanstack/react-query";
 import { propertyService } from "@/lib/services/property";
 import PropertyGallery from "@/components/property/PropertyGallery";
@@ -11,13 +9,17 @@ import PropertyReviews from "@/components/property/PropertyReviews";
 import SimilarProperties from "@/components/property/SimilarProperties";
 import { Loader2 } from "lucide-react";
 
-interface PropertyPageProps {
+interface PageProps {
   params: {
     id: string;
   };
+  searchParams: { [key: string]: string | string[] | undefined };
 }
 
-export default function PropertyDetailPage({ params }: PropertyPageProps) {
+export default function PropertyDetailPage({
+  params,
+  searchParams,
+}: PageProps) {
   const { data: property, status } = useQuery({
     queryKey: ["property", params.id],
     queryFn: () => propertyService.getProperty(params.id),
