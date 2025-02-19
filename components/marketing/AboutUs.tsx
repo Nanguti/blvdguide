@@ -77,7 +77,7 @@ export default function AboutUs() {
               Your Trusted Partner in Real Estate Excellence
             </h2>
             <p className="text-muted-foreground">
-              With over 15 years of experience, we've helped thousands of
+              With over 15 years of experience, we have helped thousands of
               clients find their dream homes. Our commitment to excellence and
               customer satisfaction sets us apart in the real estate industry.
             </p>

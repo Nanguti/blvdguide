@@ -9,6 +9,14 @@ interface LoginFormData {
   password: string;
 }
 
+interface LoginError {
+  response?: {
+    data?: {
+      message?: string;
+    };
+  };
+}
+
 export default function LoginPage() {
   const router = useRouter();
   const [formData, setFormData] = useState({
@@ -32,8 +40,9 @@ export default function LoginPage() {
       const response = await authService.login(data.email, data.password);
       localStorage.setItem("token", response.token);
       router.push("/dashboard");
-    } catch (err: any) {
-      setError(err.response?.data?.message || "An error occurred");
+    } catch (err: unknown) {
+      const error = err as LoginError;
+      setError(error.response?.data?.message || "An error occurred");
     } finally {
       setLoading(false);
     }
