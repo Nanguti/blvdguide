@@ -85,14 +85,14 @@ export default function PropertySearch() {
               onChange={(e) => debouncedLocationSearch(e.target.value)}
             />
             <AnimatePresence>
-              {locations?.length > 0 && (
+              {(locations?.length ?? 0) > 0 && (
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 10 }}
                   className="absolute z-10 left-0 right-0 mt-1 bg-background border rounded-md shadow-lg"
                 >
-                  {locations.map((location) => (
+                  {locations?.map((location) => (
                     <button
                       key={location.id}
                       onClick={() =>
