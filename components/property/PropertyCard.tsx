@@ -11,10 +11,11 @@ import { cn } from "@/lib/utils";
 
 interface PropertyCardProps {
   property: Property;
+  href: string;
   priority?: boolean;
 }
 
-export default function PropertyCard({ property }: PropertyCardProps) {
+export default function PropertyCard({ property, href }: PropertyCardProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [isFavorited, setIsFavorited] = useState(property.is_favorited);
 
@@ -41,7 +42,7 @@ export default function PropertyCard({ property }: PropertyCardProps) {
       onHoverEnd={() => setIsHovered(false)}
       className="group bg-card rounded-xl overflow-hidden border shadow-sm hover:shadow-lg transition-shadow"
     >
-      <Link href={`/properties/${property.id}`}>
+      <Link href={href}>
         <div className="relative aspect-[4/3]">
           <Image
             src={property.imageUrl}
