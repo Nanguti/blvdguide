@@ -18,7 +18,7 @@ export default function PropertyInfo({ property }: PropertyInfoProps) {
 
   const handleFavorite = async () => {
     try {
-      await propertyService.toggleFavorite(property.id);
+      await propertyService.toggleFavorite(property.id.toString());
       setIsFavorited(!isFavorited);
     } catch (error) {
       console.error("Error toggling favorite:", error);

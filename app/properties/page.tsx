@@ -25,8 +25,8 @@ const sampleProperties = {
       featured_image: "/images/featured/1.jpg",
       images: ["/images/featured/1.jpg"],
       amenities: [
-        { id: "1", name: "Swimming Pool", icon: "pool" },
-        { id: "2", name: "Garden", icon: "garden" },
+        { id: "1", name: "Swimming Pool", icon: "pool", category: "Exterior" },
+        { id: "2", name: "Garden", icon: "garden", category: "Exterior" },
       ],
       is_favorited: false,
       created_at: "2024-01-01",
