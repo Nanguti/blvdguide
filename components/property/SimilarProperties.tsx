@@ -95,7 +95,10 @@ export default function SimilarProperties({
             transition={{ delay: index * 0.1 }}
             className="min-w-[300px] snap-start"
           >
-            <PropertyCard property={property} />
+            <PropertyCard
+              property={property}
+              href={`/properties/${property.id}`}
+            />
           </motion.div>
         ))}
       </div>
