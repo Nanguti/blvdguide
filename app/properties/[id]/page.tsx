@@ -1,3 +1,5 @@
+"use client";
+
 import { useQuery } from "@tanstack/react-query";
 import { propertyService } from "@/lib/services/property";
 import PropertyGallery from "@/components/property/PropertyGallery";
@@ -13,11 +15,15 @@ interface PageProps {
   params: {
     id: string;
   };
+  searchParams: { [key: string]: string | string[] | undefined };
 }
 
-export default function PropertyDetailPage({ params }: PageProps) {
+export default function PropertyDetailPage({
+  params,
+  searchParams,
+}: PageProps) {
   const { data: property, status } = useQuery({
-    queryKey: ["property", params.id],
+    queryKey: ["property", params.id, searchParams],
     queryFn: () => propertyService.getProperty(params.id),
   });
 
