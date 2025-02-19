@@ -32,9 +32,7 @@ export default function PropertyAmenities({
     const matchesSearch = amenity.name
       .toLowerCase()
       .includes(searchQuery.toLowerCase());
-    const matchesCategory =
-      !selectedCategory || amenity.category === selectedCategory;
-    return matchesSearch && matchesCategory;
+    return matchesSearch;
   });
 
   const containerVariants = {

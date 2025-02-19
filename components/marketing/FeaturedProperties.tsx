@@ -23,8 +23,8 @@ const sampleProperties: Property[] = [
     featured_image: "/images/featured/1.jpg",
     images: ["/images/featured/1.jpg"],
     amenities: [
-      { id: "1", name: "Swimming Pool", icon: "pool" },
-      { id: "2", name: "Garden", icon: "garden" },
+      { id: "1", name: "Swimming Pool", icon: "pool", category: "Exterior" },
+      { id: "2", name: "Garden", icon: "garden", category: "Exterior" },
     ],
     is_favorited: false,
     created_at: "2024-01-01",
@@ -63,8 +63,8 @@ const sampleProperties: Property[] = [
     featured_image: "/images/featured/2.jpg",
     images: ["/images/featured/2.jpg"],
     amenities: [
-      { id: "3", name: "Parking", icon: "parking" },
-      { id: "4", name: "Security", icon: "security" },
+      { id: "3", name: "Parking", icon: "parking", category: "Exterior" },
+      { id: "4", name: "Security", icon: "security", category: "Security" },
     ],
     is_favorited: false,
     created_at: "2024-01-02",
@@ -103,8 +103,8 @@ const sampleProperties: Property[] = [
     featured_image: "/images/featured/3.jpg",
     images: ["/images/featured/3.jpg"],
     amenities: [
-      { id: "5", name: "Beach Access", icon: "beach" },
-      { id: "6", name: "Gym", icon: "gym" },
+      { id: "5", name: "Beach Access", icon: "beach", category: "Exterior" },
+      { id: "6", name: "Gym", icon: "gym", category: "Interior" },
     ],
     is_favorited: false,
     created_at: "2024-01-03",
