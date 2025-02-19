@@ -11,11 +11,13 @@ import PropertyReviews from "@/components/property/PropertyReviews";
 import SimilarProperties from "@/components/property/SimilarProperties";
 import { Loader2 } from "lucide-react";
 
-export default function PropertyDetailPage({
-  params,
-}: {
-  params: { id: string };
-}) {
+interface PropertyPageProps {
+  params: {
+    id: string;
+  };
+}
+
+export default function PropertyDetailPage({ params }: PropertyPageProps) {
   const { data: property, status } = useQuery({
     queryKey: ["property", params.id],
     queryFn: () => propertyService.getProperty(params.id),
