@@ -3,7 +3,9 @@
 import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-interface LoaderProps extends React.HTMLAttributes<HTMLDivElement> {}
+interface LoaderProps extends React.HTMLAttributes<HTMLDivElement> {
+  size?: "sm" | "md" | "lg";
+}
 
 export function Loader({ className, ...props }: LoaderProps) {
   return (

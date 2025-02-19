@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import * as SelectPrimitive from "@radix-ui/react-select";
-import { Check, ChevronDown, X } from "lucide-react";
+import { Check, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "./button";
 
@@ -25,7 +25,6 @@ export function MultiSelect({
   value = [],
   onChange,
   options = [],
-  placeholder = "Select options",
   className,
 }: MultiSelectProps) {
   const selectedOptions = options.filter((option) =>

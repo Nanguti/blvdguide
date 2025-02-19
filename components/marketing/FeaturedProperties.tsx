@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { Property } from "@/types/property";
 import { Button } from "@/components/ui/button";
 import { ChevronRight } from "lucide-react";

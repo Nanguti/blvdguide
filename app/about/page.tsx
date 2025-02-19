@@ -229,8 +229,8 @@ export default function AboutPage() {
               Ready to Start Your Journey?
             </h2>
             <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
-              Let's work together to find your perfect property or sell your
-              current one.
+              Let&apos;s work together to find your perfect property or sell
+              your current one.
             </p>
             <button
               className="inline-flex items-center gap-2 bg-white text-primary px-8 py-4 rounded-lg font-semibold

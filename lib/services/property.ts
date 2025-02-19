@@ -1,5 +1,5 @@
 import api from "./api";
-import { Property, PropertyFilter } from "@/types/property";
+import { PropertyFilter } from "@/types/property";
 
 export const propertyService = {
   async getProperties(filters?: PropertyFilter, page = 1) {

@@ -4,6 +4,11 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { authService } from "@/lib/services/auth";
 
+interface LoginFormData {
+  email: string;
+  password: string;
+}
+
 export default function LoginPage() {
   const router = useRouter();
   const [formData, setFormData] = useState({
@@ -13,16 +18,18 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
     setLoading(true);
 
     try {
-      const response = await authService.login(
-        formData.email,
-        formData.password
-      );
+      const formData = new FormData(e.currentTarget);
+      const data: LoginFormData = {
+        email: formData.get("email") as string,
+        password: formData.get("password") as string,
+      };
+      const response = await authService.login(data.email, data.password);
       localStorage.setItem("token", response.token);
       router.push("/dashboard");
     } catch (err: any) {

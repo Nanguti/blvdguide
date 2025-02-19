@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Home, Search, Heart, User } from "lucide-react";
+import { Heart, User } from "lucide-react";
 
 const navigation = [
   { name: "Home", href: "/" },

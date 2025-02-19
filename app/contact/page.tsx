@@ -65,7 +65,7 @@ export default function ContactPage() {
           >
             <h1 className="text-5xl font-bold text-white mb-6">Contact Us</h1>
             <p className="text-xl text-white/90 max-w-2xl mx-auto">
-              Have a question or need assistance? We're here to help you with
+              Have a question or need assistance? We are here to help you with
               all your real estate needs.
             </p>
           </motion.div>

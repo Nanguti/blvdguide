@@ -6,8 +6,17 @@ import { useQuery } from "@tanstack/react-query";
 import { propertyService } from "@/lib/services/property";
 import { PropertyFilter as FilterType } from "@/types/property";
 import { RangeSlider, Select, MultiSelect, Button } from "@/components/ui";
-import { Filter, X } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Filter } from "lucide-react";
+
+interface PropertyType {
+  id: string;
+  name: string;
+}
+
+interface Amenity {
+  id: string;
+  name: string;
+}
 
 interface PropertyFilterProps {
   initialFilters: FilterType;
@@ -20,8 +29,8 @@ export default function PropertyFilter({
 }: PropertyFilterProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [filters, setFilters] = useState(initialFilters);
-  const [priceRange, setPriceRange] = useState([0, 1000000]);
-  const [areaRange, setAreaRange] = useState([0, 10000]);
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 1000000]);
+  const [areaRange, setAreaRange] = useState<[number, number]>([0, 10000]);
 
   const { data: propertyTypes } = useQuery({
     queryKey: ["propertyTypes"],
@@ -83,7 +92,7 @@ export default function PropertyFilter({
                 label="Property Type"
                 value={filters.type}
                 onChange={(value) => setFilters({ ...filters, type: value })}
-                options={propertyTypes?.map((type) => ({
+                options={propertyTypes?.map((type: PropertyType) => ({
                   label: type.name,
                   value: type.id,
                 }))}
@@ -162,7 +171,7 @@ export default function PropertyFilter({
                 onChange={(value) =>
                   setFilters({ ...filters, amenities: value })
                 }
-                options={amenities?.map((amenity) => ({
+                options={amenities?.map((amenity: Amenity) => ({
                   label: amenity.name,
                   value: amenity.id,
                 }))}

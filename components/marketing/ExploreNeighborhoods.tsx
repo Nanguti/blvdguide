@@ -1,13 +1,12 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
 import { MapPin, Home, TrendingUp, Users } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import SectionWrapper from "./SectionWrapper";
-import { Map, Marker, Popup } from "react-map-gl";
+import { Map, Marker } from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 
 interface Neighborhood {
