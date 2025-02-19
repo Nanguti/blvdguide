@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { propertyService } from "@/lib/services/property";
 import PropertyCard from "@/components/property/PropertyCard";
 import PropertyFilter from "@/components/property/PropertyFilter";
 import { Loader2 } from "lucide-react";
@@ -96,7 +95,7 @@ export default function PropertiesPage() {
                 No properties found
               </h3>
               <p className="text-gray-600 mt-2">
-                Try adjusting your filters to find what you're looking for
+                Try adjusting your filters to find what you are looking for
               </p>
             </div>
           )}
