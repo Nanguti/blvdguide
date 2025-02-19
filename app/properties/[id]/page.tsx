@@ -13,13 +13,9 @@ interface PageProps {
   params: {
     id: string;
   };
-  searchParams: { [key: string]: string | string[] | undefined };
 }
 
-export default function PropertyDetailPage({
-  params,
-  searchParams,
-}: PageProps) {
+export default function PropertyDetailPage({ params }: PageProps) {
   const { data: property, status } = useQuery({
     queryKey: ["property", params.id],
     queryFn: () => propertyService.getProperty(params.id),
