@@ -104,7 +104,7 @@ export default function PropertyDetailPage() {
               transition={{ duration: 0.5, delay: 0.2 }}
               className="text-3xl font-semibold text-gray-900"
             >
-              ${property?.price?.toLocaleString() || "N/A"} -{" "}
+              Ksh.{property?.price?.toLocaleString() || "N/A"} -{" "}
               {property?.status || "Unknown"}
             </motion.h2>
             <p className="text-gray-600 mt-2">{property.description}</p>

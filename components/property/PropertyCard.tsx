@@ -86,7 +86,7 @@ export default function PropertyCard({ property, href }: PropertyCardProps) {
               </p>
             </div>
             <p className="text-lg font-bold text-primary">
-              ${property.price.toLocaleString()}
+              Ksh.{property.price.toLocaleString()}
             </p>
           </div>
 

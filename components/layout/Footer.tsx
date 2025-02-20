@@ -19,7 +19,7 @@ export default function Footer() {
       <div className="container mx-auto px-6 py-12 max-w-[1400px]">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           <div className="space-y-4">
-            <h3 className="font-bold text-xl">BLVD GUIDE</h3>
+            <h3 className="font-bold text-xl text-primary">BLVD GUIDE</h3>
             <p className="text-muted-foreground">
               Find your dream home with the most complete real estate platform.
             </p>

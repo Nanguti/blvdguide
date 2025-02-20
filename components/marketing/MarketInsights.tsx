@@ -15,7 +15,7 @@ const marketData = {
   trends: [
     {
       title: "Average Home Price",
-      value: "$725,000",
+      value: "Ksh.725,000",
       change: "+5.2%",
       isPositive: true,
       icon: DollarSign,
@@ -50,19 +50,19 @@ const marketData = {
     {
       name: "Downtown",
       priceChange: "+8.5%",
-      avgPrice: "$850,000",
+      avgPrice: "Ksh.850,000",
       demand: "High",
     },
     {
       name: "Beachfront",
       priceChange: "+12.3%",
-      avgPrice: "$1,250,000",
+      avgPrice: "Ksh.1,250,000",
       demand: "Very High",
     },
     {
       name: "Suburbs",
       priceChange: "+4.2%",
-      avgPrice: "$550,000",
+      avgPrice: "Ksh.550,000",
       demand: "Moderate",
     },
   ],

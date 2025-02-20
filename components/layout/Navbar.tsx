@@ -21,7 +21,7 @@ export default function Navbar() {
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <nav className="container mx-auto px-6 h-16 flex items-center justify-between max-w-[1400px]">
         <div className="flex items-center gap-8">
-          <Link href="/" className="font-bold text-xl">
+          <Link href="/" className="font-bold text-xl text-primary">
             BLVD GUIDE
           </Link>
           <div className="hidden md:flex items-center gap-6">
