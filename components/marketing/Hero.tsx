@@ -20,7 +20,7 @@ export default function Hero() {
         className="absolute inset-0 -z-10 overflow-hidden"
       >
         <Image
-          src="/images/hero.jpg"
+          src="/images/main-hero-banner.jpg"
           alt="Luxury home exterior"
           fill
           priority
