@@ -38,7 +38,7 @@ export default function ForgotPasswordPage() {
           {!isEmailSent ? (
             <>
               <p className="text-gray-600 text-center mb-6">
-                Enter your email address and we'll send you instructions to
+                Enter your email address and we will send you instructions to
                 reset your password.
               </p>
               <form onSubmit={handleSubmit}>
@@ -104,7 +104,7 @@ export default function ForgotPasswordPage() {
               </motion.div>
               <p className="text-lg mb-4">Check your email</p>
               <p className="text-gray-600 mb-6">
-                We've sent you instructions to reset your password.
+                We have sent you instructions to reset your password.
               </p>
             </motion.div>
           )}

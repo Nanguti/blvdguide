@@ -105,7 +105,7 @@ export default function LoginPage() {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3 }}
           >
-            Don't have an account?{" "}
+            Do not have an account?{" "}
             <Link
               href="/auth/register"
               className="text-blue-600 hover:text-blue-800 font-medium transition-colors"
