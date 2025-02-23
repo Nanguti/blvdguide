@@ -27,6 +27,8 @@ export default function HomePage() {
         <FeaturedProperties />
       </Suspense>
 
+      <HowItWorks />
+
       <AboutUs />
 
       {/* <Suspense fallback={<Loader className="my-8" />}>
@@ -37,7 +39,6 @@ export default function HomePage() {
         <FeaturedAgents />
       </Suspense>
 
-      <HowItWorks />
       <Testimonials />
 
       <Suspense fallback={<Loader className="my-8" />}>

@@ -1,14 +1,17 @@
 "use client";
 
 // import type { Metadata } from "next";
-import { Inter, Lora } from "next/font/google";
+import { Buda } from "next/font/google";
 import "./globals.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
-const lora = Lora({ subsets: ["latin"], variable: "--font-lora" });
+const buda = Buda({
+  weight: "300",
+  subsets: [],
+  variable: "--font-buda",
+});
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -107,7 +110,7 @@ export default function RootLayout({
     <QueryClientProvider client={queryClient}>
       <html lang="en">
         <body
-          className={` ${lora.variable} ${inter.variable}  antialiased min-h-screen flex flex-col overflow-x-hidden`}
+          className={`${buda.variable} antialiased min-h-screen flex flex-col overflow-x-hidden`}
         >
           <Navbar />
           <main className="flex-1">{children}</main>
