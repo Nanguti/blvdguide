@@ -1,9 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Bell, Menu, Search, User } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+
+interface User {
+  name: string;
+  // add other user properties as needed
+}
 
 interface NavbarProps {
   onMenuClick: () => void;
@@ -12,6 +17,12 @@ interface NavbarProps {
 export default function Navbar({ onMenuClick }: NavbarProps) {
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    const user = localStorage.getItem("user");
+    setUser(user ? JSON.parse(user) : null);
+  }, []);
 
   return (
     <nav className="fixed top-0 left-0 right-0 bg-white border-b z-30">
@@ -78,7 +89,7 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
               className="flex items-center gap-2 hover:bg-gray-100 rounded-lg p-2"
             >
               <User className="w-5 h-5" />
-              <span className="hidden md:block">John Doe</span>
+              <span className="hidden md:block">{user?.name}</span>
             </button>
 
             <AnimatePresence>

@@ -5,7 +5,8 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import AuthCard from "../components/AuthCard";
 import Input from "../components/Input";
-
+import { authService } from "@/lib/services/auth";
+import { useRouter } from "next/navigation";
 export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -13,14 +14,21 @@ export default function LoginPage() {
     password: "",
     remember: false,
   });
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    // Add your login logic here
     try {
-      // Implement your login API call
-      console.log("Login attempt:", formData);
+      const response = await authService.login(
+        formData.email,
+        formData.password
+      );
+      if (response.token) {
+        localStorage.setItem("token", response.token);
+        localStorage.setItem("user", JSON.stringify(response.user));
+        router.push("/dashboard");
+      }
     } catch (error) {
       console.error("Login error:", error);
     } finally {

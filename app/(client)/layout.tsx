@@ -2,7 +2,7 @@
 
 // import type { Metadata } from "next";
 import { Buda } from "next/font/google";
-import "./globals.css";
+import "../globals.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";

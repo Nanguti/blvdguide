@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Heart, User, Menu } from "lucide-react";
+import { Heart, User, Menu, ChevronDown } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -16,7 +16,16 @@ import {
 
 const navigation = [
   { name: "Home", href: "/" },
-  { name: "Properties", href: "/properties" },
+  {
+    name: "Properties",
+    href: "/properties",
+    submenu: [
+      { name: "For Sale", href: "/properties/for-sale" },
+      { name: "For Rent", href: "/properties/for-rent" },
+      { name: "New Development", href: "/properties/new-development" },
+      { name: "Recently Sold", href: "/properties/recently-sold" },
+    ],
+  },
   { name: "Agents", href: "/agents" },
   { name: "About", href: "/about" },
   { name: "Contact", href: "/contact" },
@@ -36,18 +45,40 @@ export default function Navbar() {
           </Link>
           <div className="hidden md:flex items-center gap-6">
             {navigation.map((item) => (
-              <Link
-                key={item.name}
-                href={item.href}
-                className={cn(
-                  "text-md transition-colors hover:text-primary",
-                  pathname === item.href
-                    ? "text-primary font-medium"
-                    : "text-muted-foreground"
+              <div key={item.name} className="relative group">
+                <Link
+                  href={item.href}
+                  className={cn(
+                    "text-md transition-colors hover:text-primary py-2 flex items-center gap-1",
+                    pathname === item.href
+                      ? "text-primary font-medium"
+                      : "text-muted-foreground"
+                  )}
+                >
+                  {item.name}
+                  {item.submenu && (
+                    <ChevronDown className="w-4 h-4 transition-transform group-hover:rotate-180" />
+                  )}
+                </Link>
+                {item.submenu && (
+                  <div className="absolute left-0 top-full hidden group-hover:block bg-background border rounded-md shadow-lg py-2 min-w-[200px]">
+                    {item.submenu.map((subItem) => (
+                      <Link
+                        key={subItem.name}
+                        href={subItem.href}
+                        className={cn(
+                          "block px-4 py-2 text-sm hover:bg-muted transition-colors",
+                          pathname === subItem.href
+                            ? "text-primary font-medium"
+                            : "text-muted-foreground"
+                        )}
+                      >
+                        {subItem.name}
+                      </Link>
+                    ))}
+                  </div>
                 )}
-              >
-                {item.name}
-              </Link>
+              </div>
             ))}
           </div>
         </div>
@@ -55,12 +86,16 @@ export default function Navbar() {
         {/* Desktop Actions */}
         <div className="flex items-center gap-4">
           <div className="hidden sm:flex items-center gap-2">
-            <Button variant="ghost" size="icon">
-              <Heart className="w-5 h-5" />
-            </Button>
-            <Button variant="ghost" size="icon">
-              <User className="w-5 h-5" />
-            </Button>
+            <Link href="/my/favorites">
+              <Button variant="ghost" size="icon">
+                <Heart className="w-5 h-5" />
+              </Button>
+            </Link>
+            <Link href="/dashboard">
+              <Button variant="ghost" size="icon">
+                <User className="w-5 h-5" />
+              </Button>
+            </Link>
           </div>
           <Button className="hidden sm:flex">List Property</Button>
 
@@ -84,20 +119,43 @@ export default function Navbar() {
           </SheetHeader>
           <div className="flex flex-col px-4 py-6">
             {navigation.map((item) => (
-              <SheetClose asChild key={item.name}>
-                <Link
-                  href={item.href}
-                  className={cn(
-                    "py-3 text-base transition-colors hover:text-primary border-b",
-                    pathname === item.href
-                      ? "text-primary font-medium"
-                      : "text-muted-foreground"
-                  )}
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  {item.name}
-                </Link>
-              </SheetClose>
+              <div key={item.name}>
+                <SheetClose asChild>
+                  <Link
+                    href={item.href}
+                    className={cn(
+                      "py-3 text-base transition-colors hover:text-primary border-b block flex items-center gap-1",
+                      pathname === item.href
+                        ? "text-primary font-medium"
+                        : "text-muted-foreground"
+                    )}
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    {item.name}
+                    {item.submenu && <ChevronDown className="w-4 h-4" />}
+                  </Link>
+                </SheetClose>
+                {item.submenu && (
+                  <div className="ml-4">
+                    {item.submenu.map((subItem) => (
+                      <SheetClose asChild key={subItem.name}>
+                        <Link
+                          href={subItem.href}
+                          className={cn(
+                            "py-2 text-sm transition-colors hover:text-primary border-b block",
+                            pathname === subItem.href
+                              ? "text-primary font-medium"
+                              : "text-muted-foreground"
+                          )}
+                          onClick={() => setMobileMenuOpen(false)}
+                        >
+                          {subItem.name}
+                        </Link>
+                      </SheetClose>
+                    ))}
+                  </div>
+                )}
+              </div>
             ))}
             <div className="flex flex-col gap-4 mt-6">
               <div className="flex gap-4">
@@ -105,10 +163,12 @@ export default function Navbar() {
                   <Heart className="w-5 h-5 mr-2" />
                   Favorites
                 </Button>
-                <Button variant="ghost" size="icon" className="flex-1">
-                  <User className="w-5 h-5 mr-2" />
-                  Account
-                </Button>
+                <Link href="/dashboard">
+                  <Button variant="ghost" size="icon" className="flex-1">
+                    <User className="w-5 h-5 mr-2" />
+                    Account
+                  </Button>
+                </Link>
               </div>
               <Button className="w-full">List Property</Button>
             </div>

@@ -2,7 +2,7 @@ import api from "./api";
 
 export const authService = {
   async login(email: string, password: string) {
-    const response = await api.post("/auth/login", { email, password });
+    const response = await api.post("/login", { email, password });
     return response.data;
   },
 
@@ -13,12 +13,12 @@ export const authService = {
     password_confirmation: string;
     role?: string;
   }) {
-    const response = await api.post("/auth/register", data);
+    const response = await api.post("/register", data);
     return response.data;
   },
 
   async forgotPassword(email: string) {
-    const response = await api.post("/auth/forgot-password", { email });
+    const response = await api.post("/forgot-password", { email });
     return response.data;
   },
 
@@ -28,12 +28,12 @@ export const authService = {
     password: string;
     password_confirmation: string;
   }) {
-    const response = await api.post("/auth/reset-password", data);
+    const response = await api.post("/reset-password", data);
     return response.data;
   },
 
   async verifyEmail(token: string) {
-    const response = await api.post("/auth/verify-email", { token });
+    const response = await api.post("/verify-email", { token });
     return response.data;
   },
 };

@@ -5,18 +5,19 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import AuthCard from "../components/AuthCard";
 import Input from "../components/Input";
+import { authService } from "@/lib/services/auth";
+import { useRouter } from "next/navigation";
 
 export default function ForgotPasswordPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [isEmailSent, setIsEmailSent] = useState(false);
   const [email, setEmail] = useState("");
-
+  const router = useRouter();
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      // Implement your forgot password API call
-      console.log("Reset password attempt for:", email);
+      await authService.forgotPassword(email);
       setIsEmailSent(true);
     } catch (error) {
       console.error("Reset password error:", error);

@@ -5,22 +5,29 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import AuthCard from "../components/AuthCard";
 import Input from "../components/Input";
-
+import { authService } from "@/lib/services/auth";
+import { useRouter } from "next/navigation";
 export default function RegisterPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
-    fullName: "",
+    name: "",
     email: "",
     password: "",
-    confirmPassword: "",
+    password_confirmation: "",
   });
+
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      // Implement your registration API call
-      console.log("Registration attempt:", formData);
+      const response = await authService.register(formData);
+      if (response.token) {
+        localStorage.setItem("token", response.token);
+        localStorage.setItem("user", JSON.stringify(response.user));
+        router.push("/dashboard");
+      }
     } catch (error) {
       console.error("Registration error:", error);
     } finally {
@@ -40,9 +47,9 @@ export default function RegisterPage() {
               label="Full Name"
               type="text"
               required
-              value={formData.fullName}
+              value={formData.name}
               onChange={(e) =>
-                setFormData({ ...formData, fullName: e.target.value })
+                setFormData({ ...formData, name: e.target.value })
               }
             />
             <Input
@@ -67,9 +74,12 @@ export default function RegisterPage() {
               label="Confirm Password"
               type="password"
               required
-              value={formData.confirmPassword}
+              value={formData.password_confirmation}
               onChange={(e) =>
-                setFormData({ ...formData, confirmPassword: e.target.value })
+                setFormData({
+                  ...formData,
+                  password_confirmation: e.target.value,
+                })
               }
             />
 

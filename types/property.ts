@@ -1,32 +1,23 @@
 export interface Property {
   id: number;
   title: string;
+  description: string;
   price: number;
-  location: {
-    city: {
-      name: string;
-      state: {
-        name: string;
-      };
-    };
-    longitude: number;
-    latitude: number;
-  };
-  type: string;
-  status: string;
+  property_type_id: number;
+  property_status_id: number;
+  city_id: number;
   bedrooms: number;
   bathrooms: number;
+  garages: number;
+  year_built: number;
   area: number;
   address: string;
-  featured_image: string;
-  images: string[];
-  amenities: Amenity[];
-  imageUrl: string;
-  description: string;
-  is_favorited: boolean;
-  created_at: string;
-  updated_at: string;
-  agent: Agent;
+  latitude: number;
+  longitude: number;
+  propertyType?: { id: number; name: string };
+  propertyStatus?: { id: number; name: string };
+  city?: { id: number; name: string };
+  published_status: string;
 }
 
 export interface PropertyFilter {
