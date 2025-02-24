@@ -45,9 +45,13 @@ const formSchema = z.object({
   featured_image: z.instanceof(File).optional(),
 });
 
+interface PropertyFormData extends Omit<Property, "id"> {
+  featured_image?: File;
+}
+
 interface PropertyFormProps {
   property?: Property;
-  onSubmit: (data: any) => void;
+  onSubmit: (data: PropertyFormData) => void;
 }
 
 interface SelectOption {
@@ -55,12 +59,31 @@ interface SelectOption {
   name: string;
 }
 
+// Add this interface for form values
+interface FormValues {
+  title: string;
+  description: string;
+  price: string;
+  property_type_id: string;
+  property_status_id: string;
+  city_id: string;
+  bedrooms?: string;
+  bathrooms?: string;
+  garages?: string;
+  year_built?: string;
+  area?: string;
+  address: string;
+  latitude?: string;
+  longitude?: string;
+  published_status: string;
+  featured_image?: File;
+}
+
 const PropertyForm = ({ property, onSubmit }: PropertyFormProps) => {
   const [loading, setLoading] = useState(false);
   const [propertyTypes, setPropertyTypes] = useState<SelectOption[]>([]);
   const [propertyStatuses, setPropertyStatuses] = useState<SelectOption[]>([]);
   const [cities, setCities] = useState<SelectOption[]>([]);
-  const [amenities, setAmenities] = useState([]);
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -86,20 +109,16 @@ const PropertyForm = ({ property, onSubmit }: PropertyFormProps) => {
   useEffect(() => {
     const loadFormData = async () => {
       try {
-        const [typesRes, statusesRes, citiesRes, amenitiesRes] =
-          await Promise.all([
-            propertyService.getPropertyTypes(),
-            propertyService.getPropertyStatuses(),
-            propertyService.getCities(),
-            propertyService.getAmenities(),
-          ]);
+        const [typesRes, statusesRes, citiesRes] = await Promise.all([
+          propertyService.getPropertyTypes(),
+          propertyService.getPropertyStatuses(),
+          propertyService.getCities(),
+        ]);
 
         // Direct array responses
         setPropertyTypes(typesRes || []);
         setPropertyStatuses(statusesRes || []);
         setCities(citiesRes || []);
-        // For amenities which has a data property
-        setAmenities(amenitiesRes.data || []);
       } catch (error) {
         console.error("Error loading form data:", error);
       }
@@ -108,11 +127,25 @@ const PropertyForm = ({ property, onSubmit }: PropertyFormProps) => {
     loadFormData();
   }, []);
 
-  const handleSubmit = async (data: any) => {
+  // Update handleSubmit to convert strings to numbers
+  const handleSubmit = async (formData: FormValues) => {
     setLoading(true);
     try {
-      console.log("form data here->", data);
-      await onSubmit(data);
+      const propertyData: PropertyFormData = {
+        ...formData,
+        price: Number(formData.price),
+        property_type_id: Number(formData.property_type_id),
+        property_status_id: Number(formData.property_status_id),
+        city_id: Number(formData.city_id),
+        bedrooms: formData.bedrooms ? Number(formData.bedrooms) : null,
+        bathrooms: formData.bathrooms ? Number(formData.bathrooms) : null,
+        garages: formData.garages ? Number(formData.garages) : null,
+        year_built: formData.year_built ? Number(formData.year_built) : null,
+        area: formData.area ? Number(formData.area) : null,
+        latitude: formData.latitude ? Number(formData.latitude) : null,
+        longitude: formData.longitude ? Number(formData.longitude) : null,
+      };
+      await onSubmit(propertyData);
     } catch (error) {
       console.error("Error submitting form:", error);
     } finally {

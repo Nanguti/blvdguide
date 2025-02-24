@@ -7,6 +7,10 @@ import PropertyForm from "@/components/properties/PropertyForm";
 import { propertyService } from "@/lib/services/property";
 import { Property } from "@/types/property";
 
+interface PropertyFormData extends Omit<Property, "id"> {
+  featured_image?: File;
+}
+
 export default function EditProperty({
   params,
 }: {
@@ -35,7 +39,7 @@ export default function EditProperty({
     loadProperty();
   }, [id]);
 
-  const handleSubmit = async (data: any) => {
+  const handleSubmit = async (data: PropertyFormData) => {
     try {
       await propertyService.updateProperty(parseInt(id), data);
       router.push("/dashboard/properties");

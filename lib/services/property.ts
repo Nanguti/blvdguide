@@ -1,42 +1,54 @@
 import api from "@/lib/services/api";
-import { PropertyFilter } from "@/types/property";
+import { Property, PropertyFilter } from "@/types/property";
+
+interface PropertyResponse {
+  data: Property[];
+  // Add other response fields if needed
+}
+
+interface SinglePropertyResponse {
+  data: Property;
+}
 
 export const propertyService = {
-  getProperties: async (filters: any) => {
+  getProperties: async (filters: PropertyFilter): Promise<PropertyResponse> => {
     const response = await api.get("/properties", { params: filters });
     console.log("response.data", response.data);
     return response.data;
   },
 
-  getProperty: (id: number) => {
-    return api.get(`/properties/${id}`);
+  getProperty: async (id: number): Promise<SinglePropertyResponse> => {
+    const response = await api.get(`/properties/${id}`);
+    return response.data;
   },
 
-  createProperty: async (data: any) => {
+  createProperty: async (
+    data: Omit<Property, "id"> & { featured_image?: File }
+  ): Promise<SinglePropertyResponse> => {
     const formData = new FormData();
 
-    // Append all regular fields
-    Object.keys(data).forEach((key) => {
-      if (key !== "featured_image") {
-        formData.append(key, data[key]);
+    Object.entries(data).forEach(([key, value]) => {
+      if (key !== "featured_image" && value !== null) {
+        formData.append(key, String(value));
       }
     });
 
-    // Append featured image if exists
     if (data.featured_image) {
       formData.append("featured_image", data.featured_image);
     }
 
     const response = await api.post("/properties", formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
+      headers: { "Content-Type": "multipart/form-data" },
     });
     return response.data;
   },
 
-  updateProperty: (id: number, data: any) => {
-    return api.post(`/properties/${id}`, data);
+  updateProperty: async (
+    id: number,
+    data: Partial<Property> & { featured_image?: File }
+  ): Promise<SinglePropertyResponse> => {
+    const response = await api.post(`/properties/${id}`, data);
+    return response.data;
   },
 
   deleteProperty: (id: number) => {
