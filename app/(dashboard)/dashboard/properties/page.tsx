@@ -16,29 +16,21 @@ import { Property } from "@/types/property";
 import { propertyService } from "@/lib/services/property";
 import { formatCurrency } from "@/lib/utils";
 
-interface PropertyListProps {
-  filters: {
-    status: string;
-    type: string;
-    search: string;
-  };
-}
-
-const PropertyList = ({ filters }: PropertyListProps) => {
+export default function PropertiesPage() {
   const [properties, setProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     loadProperties();
-  }, [filters]);
+  }, []);
 
   const loadProperties = async () => {
     try {
       setLoading(true);
       setError(null);
-      const response = await propertyService.getProperties(filters);
-      setProperties(Array.isArray(response.data) ? response.data : []);
+      const response = await propertyService.getProperties({});
+      setProperties(response.data);
     } catch (error) {
       console.error("Error loading properties:", error);
       setError("Failed to load properties");
@@ -130,6 +122,4 @@ const PropertyList = ({ filters }: PropertyListProps) => {
       </div>
     </div>
   );
-};
-
-export default PropertyList;
+}
