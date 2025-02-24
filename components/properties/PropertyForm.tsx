@@ -24,6 +24,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { Property } from "@/types/property";
 import { propertyService } from "@/lib/services/property";
+import { CreatePropertyData } from "@/lib/services/property";
 
 // Define the form schema
 const formSchema = z.object({
@@ -45,13 +46,9 @@ const formSchema = z.object({
   featured_image: z.instanceof(File).optional(),
 });
 
-interface PropertyFormData extends Omit<Property, "id"> {
-  featured_image?: File;
-}
-
 interface PropertyFormProps {
   property?: Property;
-  onSubmit: (data: PropertyFormData) => void;
+  onSubmit: (data: CreatePropertyData) => Promise<void> | void;
 }
 
 interface SelectOption {
@@ -131,8 +128,9 @@ const PropertyForm = ({ property, onSubmit }: PropertyFormProps) => {
   const handleSubmit = async (formData: FormValues) => {
     setLoading(true);
     try {
-      const propertyData: PropertyFormData = {
-        ...formData,
+      const propertyData: CreatePropertyData = {
+        title: formData.title,
+        description: formData.description,
         price: Number(formData.price),
         property_type_id: Number(formData.property_type_id),
         property_status_id: Number(formData.property_status_id),
@@ -142,8 +140,11 @@ const PropertyForm = ({ property, onSubmit }: PropertyFormProps) => {
         garages: formData.garages ? Number(formData.garages) : null,
         year_built: formData.year_built ? Number(formData.year_built) : null,
         area: formData.area ? Number(formData.area) : null,
+        address: formData.address,
         latitude: formData.latitude ? Number(formData.latitude) : null,
         longitude: formData.longitude ? Number(formData.longitude) : null,
+        published_status: formData.published_status,
+        featured_image: formData.featured_image,
       };
       await onSubmit(propertyData);
     } catch (error) {

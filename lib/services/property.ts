@@ -10,6 +10,10 @@ interface SinglePropertyResponse {
   data: Property;
 }
 
+export type CreatePropertyData = Omit<Property, "id" | "featured_image"> & {
+  featured_image?: File | string | null;
+};
+
 export const propertyService = {
   getProperties: async (filters: PropertyFilter): Promise<PropertyResponse> => {
     const response = await api.get("/properties", { params: filters });
@@ -22,9 +26,7 @@ export const propertyService = {
     return response.data;
   },
 
-  createProperty: async (
-    data: Omit<Property, "id"> & { featured_image?: File }
-  ): Promise<SinglePropertyResponse> => {
+  createProperty: async (data: CreatePropertyData) => {
     const formData = new FormData();
 
     Object.entries(data).forEach(([key, value]) => {
@@ -45,7 +47,7 @@ export const propertyService = {
 
   updateProperty: async (
     id: number,
-    data: Partial<Property> & { featured_image?: File }
+    data: Partial<CreatePropertyData>
   ): Promise<SinglePropertyResponse> => {
     const response = await api.post(`/properties/${id}`, data);
     return response.data;

@@ -5,10 +5,9 @@ import { useRouter } from "next/navigation";
 import PropertyForm from "@/components/properties/PropertyForm";
 import { propertyService } from "@/lib/services/property";
 import { Property } from "@/types/property";
+import type { CreatePropertyData } from "@/lib/services/property";
 
-interface PropertyFormData extends Omit<Property, "id"> {
-  featured_image?: File;
-}
+type PropertyFormData = CreatePropertyData;
 
 export default function AddProperty() {
   const router = useRouter();
