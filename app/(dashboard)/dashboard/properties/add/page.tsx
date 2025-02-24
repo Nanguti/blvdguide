@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import PropertyForm from "@/components/properties/PropertyForm";
 import { propertyService } from "@/lib/services/property";
-import { Property } from "@/types/property";
 import type { CreatePropertyData } from "@/lib/services/property";
 
 type PropertyFormData = CreatePropertyData;
