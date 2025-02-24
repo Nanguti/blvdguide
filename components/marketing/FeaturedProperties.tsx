@@ -29,6 +29,7 @@ const sampleProperties: Property[] = [
     city: { id: 1, name: "Beverly Hills" },
     published_status: "published",
     featured_image: "/images/featured/1.jpg",
+    is_favorited: false,
   },
   {
     id: 2,
@@ -51,6 +52,7 @@ const sampleProperties: Property[] = [
     city: { id: 2, name: "Manhattan" },
     published_status: "published",
     featured_image: "/images/featured/2.jpg",
+    is_favorited: false,
   },
   {
     id: 3,
@@ -73,6 +75,7 @@ const sampleProperties: Property[] = [
     city: { id: 3, name: "Miami" },
     published_status: "published",
     featured_image: "/images/featured/3.jpg",
+    is_favorited: false,
   },
 ];
 

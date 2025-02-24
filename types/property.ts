@@ -19,6 +19,7 @@ export interface Property {
   city?: { id: number; name: string };
   published_status: string;
   featured_image?: string | null;
+  is_favorited?: boolean;
 }
 
 export interface PropertyFilter {
