@@ -45,7 +45,7 @@ export default function PropertyCard({ property, href }: PropertyCardProps) {
       <Link href={href}>
         <div className="relative aspect-[4/3]">
           <Image
-            src={property.imageUrl}
+            src={property.featured_image || ""}
             alt={property.title}
             fill
             className={cn(
@@ -69,7 +69,7 @@ export default function PropertyCard({ property, href }: PropertyCardProps) {
           <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-black/60 to-transparent" />
           <div className="absolute bottom-2 left-2">
             <span className="px-2 py-1 rounded-full text-xs font-medium bg-primary text-white">
-              {property.type}
+              {property.propertyType?.name}
             </span>
           </div>
         </div>
@@ -81,8 +81,7 @@ export default function PropertyCard({ property, href }: PropertyCardProps) {
                 {property.title}
               </h3>
               <p className="text-muted-foreground text-sm mt-1">
-                {property.location.city.name},{" "}
-                {property.location.city.state.name}
+                {property.city?.name}
               </p>
             </div>
             <p className="text-lg font-bold text-primary">

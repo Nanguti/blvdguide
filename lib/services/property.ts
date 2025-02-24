@@ -74,7 +74,7 @@ export const propertyService = {
 
   getAmenities: async () => {
     const response = await api.get("/amenities");
-    return response;
+    return response.data;
   },
 
   async toggleFavorite(id: string) {

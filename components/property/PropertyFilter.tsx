@@ -5,7 +5,16 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
 import { propertyService } from "@/lib/services/property";
 import { PropertyFilter as FilterType } from "@/types/property";
-import { RangeSlider, Select, MultiSelect, Button } from "@/components/ui";
+import {
+  RangeSlider,
+  Select,
+  MultiSelect,
+  Button,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui";
 import { Filter } from "lucide-react";
 
 interface PropertyType {
@@ -88,15 +97,26 @@ export default function PropertyFilter({
             className="overflow-hidden"
           >
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
-              <Select
-                label="Property Type"
-                value={filters.type}
-                onChange={(value) => setFilters({ ...filters, type: value })}
-                options={propertyTypes?.map((type: PropertyType) => ({
-                  label: type.name,
-                  value: type.id,
-                }))}
-              />
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Property Type</label>
+                <Select
+                  value={filters.type}
+                  onValueChange={(value) =>
+                    setFilters({ ...filters, type: value })
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {propertyTypes?.map((type: PropertyType) => (
+                      <SelectItem key={type.id} value={type.id}>
+                        {type.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
 
               <div className="space-y-2">
                 <label className="text-sm font-medium">Price Range</label>
@@ -119,28 +139,47 @@ export default function PropertyFilter({
 
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-2">
-                  <Select
-                    label="Beds"
-                    value={filters.bedrooms?.toString()}
-                    onChange={(value) =>
-                      setFilters({ ...filters, bedrooms: Number(value) })
-                    }
-                    options={[1, 2, 3, 4, 5].map((n) => ({
-                      label: `${n}+`,
-                      value: n.toString(),
-                    }))}
-                  />
-                  <Select
-                    label="Baths"
-                    value={filters.bathrooms?.toString()}
-                    onChange={(value) =>
-                      setFilters({ ...filters, bathrooms: Number(value) })
-                    }
-                    options={[1, 2, 3, 4, 5].map((n) => ({
-                      label: `${n}+`,
-                      value: n.toString(),
-                    }))}
-                  />
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">Beds</label>
+                    <Select
+                      value={filters.bedrooms?.toString()}
+                      onValueChange={(value) =>
+                        setFilters({ ...filters, bedrooms: Number(value) })
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Beds" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {[1, 2, 3, 4, 5].map((n) => (
+                          <SelectItem key={n} value={n.toString()}>
+                            {n}+ beds
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">Baths</label>
+                    <Select
+                      value={filters.bathrooms?.toString()}
+                      onValueChange={(value) =>
+                        setFilters({ ...filters, bathrooms: Number(value) })
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Baths" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {[1, 2, 3, 4, 5].map((n) => (
+                          <SelectItem key={n} value={n.toString()}>
+                            {n}+ baths
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
               </div>
 
