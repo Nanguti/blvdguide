@@ -61,14 +61,14 @@ export default function PropertiesPage() {
 
   if (!properties.length) {
     return (
-      <div className="flex mt-24 px-5">
-        <div className="text-center py-4">No properties found</div>
+      <div className="flex flex-col items-center mt-24 px-5 space-y-4">
         <Link href="/dashboard/properties/add">
           <Button>
             <Plus className="w-4 h-4 mr-2" />
             Add Property
           </Button>
         </Link>
+        <div className="text-center text-gray-500">No properties found</div>
       </div>
     );
   }
