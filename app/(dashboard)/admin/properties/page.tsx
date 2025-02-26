@@ -62,7 +62,7 @@ export default function PropertiesPage() {
   if (!properties.length) {
     return (
       <div className="flex flex-col items-center mt-24 px-5 space-y-4">
-        <Link href="/dashboard/properties/add">
+        <Link href="/admin/properties/add">
           <Button>
             <Plus className="w-4 h-4 mr-2" />
             Add Property
@@ -75,9 +75,9 @@ export default function PropertiesPage() {
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-between items-center mt-24 px-5">
+      <div className="flex justify-between items-center mt-10 px-5">
         <h2 className="text-2xl font-bold">Properties</h2>
-        <Link href="/dashboard/properties/add">
+        <Link href="/admin/properties/add">
           <Button>
             <Plus className="w-4 h-4 mr-2" />
             Add Property

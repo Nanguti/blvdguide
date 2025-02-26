@@ -27,7 +27,7 @@ export default function AddProperty() {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 mt-20 px-5">
       <h2 className="text-2xl font-bold">Add New Property</h2>
       {error && <div className="text-red-500">{error}</div>}
       <PropertyForm onSubmit={handleSubmit} />

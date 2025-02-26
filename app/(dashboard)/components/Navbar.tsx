@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Bell, Menu, Search, User } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import api from "@/lib/services/api";
 
 interface User {
   name: string;
@@ -113,7 +114,26 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
                     Settings
                   </Link>
                   <hr className="my-2" />
-                  <button className="px-4 py-2 hover:bg-gray-100 block w-full text-left text-red-600">
+                  <button
+                    onClick={async () => {
+                      try {
+                        // Call the logout API endpoint
+                        await api.post("/logout");
+
+                        // Clear local storage
+                        localStorage.removeItem("token");
+                        localStorage.removeItem("user");
+
+                        window.location.href = "/login";
+                      } catch (error) {
+                        console.error("Logout failed:", error);
+                        localStorage.removeItem("token");
+                        localStorage.removeItem("user");
+                        window.location.href = "/login";
+                      }
+                    }}
+                    className="px-4 py-2 hover:bg-gray-100 block w-full text-left text-red-600"
+                  >
                     Sign Out
                   </button>
                 </motion.div>
