@@ -25,14 +25,26 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import api from "@/lib/services/api";
+import { AxiosError } from "axios";
+
+interface PropertyType {
+  id: number;
+  name: string;
+  slug: string;
+}
+
+interface ErrorResponse {
+  message: string;
+}
 
 export default function PropertyTypesPage() {
   const [open, setOpen] = useState(false);
   const [openAlert, setOpenAlert] = useState(false);
-  const [selectedPropertyType, setSelectedPropertyType] = useState<any>(null);
+  const [selectedPropertyType, setSelectedPropertyType] =
+    useState<PropertyType | null>(null);
   const queryClient = useQueryClient();
 
-  const { data: propertyTypes, isLoading } = useQuery({
+  const { data: propertyTypes, isLoading } = useQuery<PropertyType[]>({
     queryKey: ["propertyTypes"],
     queryFn: async () => {
       const response = await api.get("/property-types");
@@ -50,7 +62,7 @@ export default function PropertyTypesPage() {
       toast.success("Property type deleted successfully");
       setOpenAlert(false);
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<ErrorResponse>) => {
       const errorMessage =
         error.response?.data?.message ||
         error.message ||
@@ -59,12 +71,12 @@ export default function PropertyTypesPage() {
     },
   });
 
-  const handleEdit = (propertyType: any) => {
+  const handleEdit = (propertyType: PropertyType) => {
     setSelectedPropertyType(propertyType);
     setOpen(true);
   };
 
-  const handleDelete = (propertyType: any) => {
+  const handleDelete = (propertyType: PropertyType) => {
     setSelectedPropertyType(propertyType);
     setOpenAlert(true);
   };
@@ -76,23 +88,21 @@ export default function PropertyTypesPage() {
   return (
     <div className="p-6">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Property Types Management</h1>
+        <h1 className="text-2xl font-bold">Property Types</h1>
         <Button onClick={() => setOpen(true)}>Add New Property Type</Button>
       </div>
 
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>ID</TableHead>
             <TableHead>Name</TableHead>
             <TableHead>Slug</TableHead>
             <TableHead>Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {propertyTypes?.map((propertyType: any) => (
+          {propertyTypes?.map((propertyType) => (
             <TableRow key={propertyType.id}>
-              <TableCell>{propertyType.id}</TableCell>
               <TableCell>{propertyType.name}</TableCell>
               <TableCell>{propertyType.slug}</TableCell>
               <TableCell className="flex gap-2">
@@ -135,7 +145,10 @@ export default function PropertyTypesPage() {
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
-              onClick={() => deleteMutation.mutate(selectedPropertyType.id)}
+              onClick={() =>
+                selectedPropertyType &&
+                deleteMutation.mutate(selectedPropertyType.id)
+              }
             >
               Delete
             </AlertDialogAction>

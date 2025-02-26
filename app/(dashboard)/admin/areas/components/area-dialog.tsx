@@ -5,6 +5,7 @@ import * as z from "zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
 import api from "@/lib/services/api";
+import { AxiosError } from "axios";
 import {
   Dialog,
   DialogContent,
@@ -29,6 +30,20 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+interface Area {
+  id: number;
+  name: string;
+  slug: string;
+  cityId: number;
+  country: { id: number };
+  state: { id: number };
+  city: { id: number };
+}
+
+interface ErrorResponse {
+  message: string;
+}
+
 const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
   countryId: z.string().min(1, "Country is required"),
@@ -39,11 +54,18 @@ const formSchema = z.object({
 type AreaDialogProps = {
   open: boolean;
   setOpen: (open: boolean) => void;
-  area?: any;
+  area?: Area | null;
+  cityId: number;
   onClose: () => void;
 };
 
-export function AreaDialog({ open, setOpen, area, onClose }: AreaDialogProps) {
+export function AreaDialog({
+  open,
+  setOpen,
+  area,
+  cityId,
+  onClose,
+}: AreaDialogProps) {
   const queryClient = useQueryClient();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -97,7 +119,7 @@ export function AreaDialog({ open, setOpen, area, onClose }: AreaDialogProps) {
       toast.success("Area created successfully");
       handleClose();
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<ErrorResponse>) => {
       const errorMessage =
         error.response?.data?.message ||
         error.message ||
@@ -109,7 +131,7 @@ export function AreaDialog({ open, setOpen, area, onClose }: AreaDialogProps) {
   const updateMutation = useMutation({
     mutationFn: async (values: z.infer<typeof formSchema>) => {
       const response = await api.put(
-        `/cities/${values.cityId}/areas/${area.id}`,
+        `/cities/${values.cityId}/areas/${area?.id}`,
         {
           name: values.name,
         }
@@ -121,7 +143,7 @@ export function AreaDialog({ open, setOpen, area, onClose }: AreaDialogProps) {
       toast.success("Area updated successfully");
       handleClose();
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<ErrorResponse>) => {
       const errorMessage =
         error.response?.data?.message ||
         error.message ||

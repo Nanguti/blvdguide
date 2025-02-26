@@ -15,11 +15,16 @@ import Image from "next/image";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
 import api from "@/lib/services/api";
+import { AxiosError } from "axios";
 
 interface Amenity {
   id: number;
   name: string;
   icon: string;
+}
+
+interface ErrorResponse {
+  message: string;
 }
 
 export default function AmenitiesPage() {
@@ -43,7 +48,7 @@ export default function AmenitiesPage() {
       queryClient.invalidateQueries({ queryKey: ["amenities"] });
       toast.success("Amenity deleted successfully");
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<ErrorResponse>) => {
       const errorMessage =
         error.response?.data?.message ||
         error.message ||

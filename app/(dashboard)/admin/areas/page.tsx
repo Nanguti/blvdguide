@@ -25,15 +25,48 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import api from "@/lib/services/api";
+import { AxiosError } from "axios";
+
+interface Country {
+  id: number;
+  name: string;
+}
+
+interface State {
+  id: number;
+  name: string;
+  countryId: number;
+  country: Country;
+}
+
+interface City {
+  id: number;
+  name: string;
+  stateId: number;
+  state: State;
+}
+
+interface Area {
+  id: number;
+  name: string;
+  slug: string;
+  cityId: number;
+  city: City;
+  state: State;
+  country: Country;
+}
+
+interface ErrorResponse {
+  message: string;
+}
 
 export default function AreasPage() {
   const [open, setOpen] = useState(false);
   const [openAlert, setOpenAlert] = useState(false);
-  const [selectedArea, setSelectedArea] = useState<any>(null);
+  const [selectedArea, setSelectedArea] = useState<Area | null>(null);
   const queryClient = useQueryClient();
 
-  // First fetch all countries
-  const { data: countries } = useQuery({
+  const { data: countries } = useQuery<Country[]>({
     queryKey: ["countries"],
     queryFn: async () => {
       const response = await api.get("/countries");
@@ -41,75 +74,33 @@ export default function AreasPage() {
     },
   });
 
-  // Then fetch states for all countries
-  const { data: states } = useQuery({
-    queryKey: ["states", countries],
+  const { data: states } = useQuery<State[]>({
+    queryKey: ["states"],
     queryFn: async () => {
-      if (!countries) return [];
-
-      const statesPromises = countries.map(async (country: any) => {
-        const response = await api.get(`/countries/${country.id}/states`);
-        return response.data.map((state: any) => ({
-          ...state,
-          country: country,
-        }));
-      });
-
-      const statesArrays = await Promise.all(statesPromises);
-      return statesArrays.flat();
+      const response = await api.get("/states");
+      return response.data;
     },
-    enabled: !!countries,
   });
 
-  // Then fetch cities for all states
-  const { data: cities } = useQuery({
-    queryKey: ["cities", states],
+  const { data: cities } = useQuery<City[]>({
+    queryKey: ["cities"],
     queryFn: async () => {
-      if (!states) return [];
-
-      const citiesPromises = states.map(async (state: any) => {
-        const response = await api.get(`/states/${state.id}/cities`);
-        return response.data.map((city: any) => ({
-          ...city,
-          state: state,
-          country: state.country,
-        }));
-      });
-
-      const citiesArrays = await Promise.all(citiesPromises);
-      return citiesArrays.flat();
+      const response = await api.get("/cities");
+      return response.data;
     },
-    enabled: !!states,
   });
 
-  // Finally fetch areas for all cities
-  const { data: areas, isLoading } = useQuery({
-    queryKey: ["areas", cities],
+  const { data: areas, isLoading } = useQuery<Area[]>({
+    queryKey: ["areas"],
     queryFn: async () => {
-      if (!cities) return [];
-
-      const areasPromises = cities.map(async (city: any) => {
-        const response = await api.get(`/cities/${city.id}/areas`);
-        return response.data.map((area: any) => ({
-          ...area,
-          city: city,
-          state: city.state,
-          country: city.country,
-        }));
-      });
-
-      const areasArrays = await Promise.all(areasPromises);
-      return areasArrays.flat();
+      const response = await api.get("/areas");
+      return response.data;
     },
-    enabled: !!cities,
   });
 
   const deleteMutation = useMutation({
     mutationFn: async (id: number) => {
-      if (!areas) throw new Error("Areas not loaded");
-      const area = areas.find((a: any) => a.id === id);
-      if (!area) throw new Error("Area not found");
-      const response = await api.delete(`/cities/${area.city.id}/areas/${id}`);
+      const response = await api.delete(`/areas/${id}`);
       return response.data;
     },
     onSuccess: () => {
@@ -117,7 +108,7 @@ export default function AreasPage() {
       toast.success("Area deleted successfully");
       setOpenAlert(false);
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<ErrorResponse>) => {
       const errorMessage =
         error.response?.data?.message ||
         error.message ||
@@ -126,12 +117,12 @@ export default function AreasPage() {
     },
   });
 
-  const handleEdit = (area: any) => {
+  const handleEdit = (area: Area) => {
     setSelectedArea(area);
     setOpen(true);
   };
 
-  const handleDelete = (area: any) => {
+  const handleDelete = (area: Area) => {
     setSelectedArea(area);
     setOpenAlert(true);
   };
@@ -150,8 +141,8 @@ export default function AreasPage() {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>ID</TableHead>
             <TableHead>Name</TableHead>
+            <TableHead>Slug</TableHead>
             <TableHead>City</TableHead>
             <TableHead>State</TableHead>
             <TableHead>Country</TableHead>
@@ -159,13 +150,13 @@ export default function AreasPage() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {areas?.map((area: any) => (
+          {areas?.map((area) => (
             <TableRow key={area.id}>
-              <TableCell>{area.id}</TableCell>
               <TableCell>{area.name}</TableCell>
-              <TableCell>{area.city?.name}</TableCell>
-              <TableCell>{area.state?.name}</TableCell>
-              <TableCell>{area.country?.name}</TableCell>
+              <TableCell>{area.slug}</TableCell>
+              <TableCell>{area.city.name}</TableCell>
+              <TableCell>{area.state.name}</TableCell>
+              <TableCell>{area.country.name}</TableCell>
               <TableCell className="flex gap-2">
                 <Button
                   variant="outline"
@@ -191,6 +182,7 @@ export default function AreasPage() {
         open={open}
         setOpen={setOpen}
         area={selectedArea}
+        cityId={selectedArea?.cityId || 0}
         onClose={() => setSelectedArea(null)}
       />
 
@@ -206,7 +198,9 @@ export default function AreasPage() {
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
-              onClick={() => deleteMutation.mutate(selectedArea.id)}
+              onClick={() =>
+                selectedArea && deleteMutation.mutate(selectedArea.id)
+              }
             >
               Delete
             </AlertDialogAction>

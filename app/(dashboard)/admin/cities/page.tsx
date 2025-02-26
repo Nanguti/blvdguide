@@ -25,15 +25,40 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import api from "@/lib/services/api";
+import { AxiosError } from "axios";
+
+interface Country {
+  id: number;
+  name: string;
+}
+
+interface State {
+  id: number;
+  name: string;
+  countryId: number;
+  country: Country;
+}
+
+interface City {
+  id: number;
+  name: string;
+  slug: string;
+  stateId: number;
+  state: State;
+  country: Country;
+}
+
+interface ErrorResponse {
+  message: string;
+}
 
 export default function CitiesPage() {
   const [open, setOpen] = useState(false);
   const [openAlert, setOpenAlert] = useState(false);
-  const [selectedCity, setSelectedCity] = useState<any>(null);
+  const [selectedCity, setSelectedCity] = useState<City | null>(null);
   const queryClient = useQueryClient();
 
-  // First fetch all countries
-  const { data: countries } = useQuery({
+  const { data: countries } = useQuery<Country[]>({
     queryKey: ["countries"],
     queryFn: async () => {
       const response = await api.get("/countries");
@@ -41,55 +66,25 @@ export default function CitiesPage() {
     },
   });
 
-  // Then fetch states for all countries
-  const { data: states } = useQuery({
-    queryKey: ["states", countries],
+  const { data: states } = useQuery<State[]>({
+    queryKey: ["states"],
     queryFn: async () => {
-      if (!countries) return [];
-
-      const statesPromises = countries.map(async (country: any) => {
-        const response = await api.get(`/countries/${country.id}/states`);
-        return response.data.map((state: any) => ({
-          ...state,
-          country: country,
-        }));
-      });
-
-      const statesArrays = await Promise.all(statesPromises);
-      return statesArrays.flat();
+      const response = await api.get("/states");
+      return response.data;
     },
-    enabled: !!countries,
   });
 
-  // Finally fetch cities for all states
-  const { data: cities, isLoading } = useQuery({
-    queryKey: ["cities", states],
+  const { data: cities, isLoading } = useQuery<City[]>({
+    queryKey: ["cities"],
     queryFn: async () => {
-      if (!states) return [];
-
-      const citiesPromises = states.map(async (state: any) => {
-        const response = await api.get(`/states/${state.id}/cities`);
-        return response.data.map((city: any) => ({
-          ...city,
-          state: state,
-          country: state.country,
-        }));
-      });
-
-      const citiesArrays = await Promise.all(citiesPromises);
-      return citiesArrays.flat();
+      const response = await api.get("/cities");
+      return response.data;
     },
-    enabled: !!states,
   });
 
   const deleteMutation = useMutation({
     mutationFn: async (id: number) => {
-      if (!cities) throw new Error("Cities not loaded");
-      const city = cities.find((c: any) => c.id === id);
-      if (!city) throw new Error("City not found");
-      const response = await api.delete(
-        `/states/${city.state.id}/cities/${id}`
-      );
+      const response = await api.delete(`/cities/${id}`);
       return response.data;
     },
     onSuccess: () => {
@@ -97,7 +92,7 @@ export default function CitiesPage() {
       toast.success("City deleted successfully");
       setOpenAlert(false);
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<ErrorResponse>) => {
       const errorMessage =
         error.response?.data?.message ||
         error.message ||
@@ -106,12 +101,12 @@ export default function CitiesPage() {
     },
   });
 
-  const handleEdit = (city: any) => {
+  const handleEdit = (city: City) => {
     setSelectedCity(city);
     setOpen(true);
   };
 
-  const handleDelete = (city: any) => {
+  const handleDelete = (city: City) => {
     setSelectedCity(city);
     setOpenAlert(true);
   };
@@ -132,18 +127,20 @@ export default function CitiesPage() {
           <TableRow>
             <TableHead>ID</TableHead>
             <TableHead>Name</TableHead>
+            <TableHead>Slug</TableHead>
             <TableHead>State</TableHead>
             <TableHead>Country</TableHead>
             <TableHead>Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {cities?.map((city: any) => (
+          {cities?.map((city) => (
             <TableRow key={city.id}>
               <TableCell>{city.id}</TableCell>
               <TableCell>{city.name}</TableCell>
-              <TableCell>{city.state?.name}</TableCell>
-              <TableCell>{city.country?.name}</TableCell>
+              <TableCell>{city.slug}</TableCell>
+              <TableCell>{city.state.name}</TableCell>
+              <TableCell>{city.country.name}</TableCell>
               <TableCell className="flex gap-2">
                 <Button
                   variant="outline"

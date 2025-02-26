@@ -1,10 +1,11 @@
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
 import api from "@/lib/services/api";
+import { AxiosError } from "axios";
 import {
   Dialog,
   DialogContent,
@@ -29,6 +30,23 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+interface State {
+  id: number;
+  name: string;
+}
+
+interface City {
+  id: number;
+  name: string;
+  slug: string;
+  stateId: number;
+  state: State;
+}
+
+interface ErrorResponse {
+  message: string;
+}
+
 const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
   countryId: z.string().min(1, "Country is required"),
@@ -38,7 +56,7 @@ const formSchema = z.object({
 type CityDialogProps = {
   open: boolean;
   setOpen: (open: boolean) => void;
-  city?: any;
+  city?: City | null;
   onClose: () => void;
 };
 
@@ -84,7 +102,7 @@ export function CityDialog({ open, setOpen, city, onClose }: CityDialogProps) {
       toast.success("City created successfully");
       handleClose();
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<ErrorResponse>) => {
       const errorMessage =
         error.response?.data?.message ||
         error.message ||
@@ -108,7 +126,7 @@ export function CityDialog({ open, setOpen, city, onClose }: CityDialogProps) {
       toast.success("City updated successfully");
       handleClose();
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<ErrorResponse>) => {
       const errorMessage =
         error.response?.data?.message ||
         error.message ||

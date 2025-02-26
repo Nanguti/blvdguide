@@ -5,6 +5,7 @@ import * as z from "zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
 import api from "@/lib/services/api";
+import { AxiosError } from "axios";
 import {
   Dialog,
   DialogContent,
@@ -22,6 +23,16 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
+interface Category {
+  id: number;
+  name: string;
+  slug: string;
+}
+
+interface ErrorResponse {
+  message: string;
+}
+
 const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
   slug: z.string().min(1, "Slug is required"),
@@ -30,7 +41,7 @@ const formSchema = z.object({
 type CategoryDialogProps = {
   open: boolean;
   setOpen: (open: boolean) => void;
-  category?: any;
+  category?: Category | null;
   onClose: () => void;
 };
 
@@ -59,7 +70,7 @@ export function CategoryDialog({
       toast.success("Category created successfully");
       handleClose();
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<ErrorResponse>) => {
       const errorMessage =
         error.response?.data?.message ||
         error.message ||
@@ -78,7 +89,7 @@ export function CategoryDialog({
       toast.success("Category updated successfully");
       handleClose();
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<ErrorResponse>) => {
       const errorMessage =
         error.response?.data?.message ||
         error.message ||

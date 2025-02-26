@@ -25,14 +25,31 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import api from "@/lib/services/api";
+import { AxiosError } from "axios";
+
+interface Country {
+  id: number;
+  name: string;
+}
+
+interface State {
+  id: number;
+  name: string;
+  countryId: number;
+  country: Country;
+}
+
+interface ErrorResponse {
+  message: string;
+}
 
 export default function StatesPage() {
   const [open, setOpen] = useState(false);
   const [openAlert, setOpenAlert] = useState(false);
-  const [selectedState, setSelectedState] = useState<any>(null);
+  const [selectedState, setSelectedState] = useState<State | null>(null);
   const queryClient = useQueryClient();
 
-  const { data: countries } = useQuery({
+  const { data: countries } = useQuery<Country[]>({
     queryKey: ["countries"],
     queryFn: async () => {
       const response = await api.get("/countries");
@@ -40,15 +57,14 @@ export default function StatesPage() {
     },
   });
 
-  const { data: states, isLoading } = useQuery({
+  const { data: states, isLoading } = useQuery<State[]>({
     queryKey: ["states", countries],
     queryFn: async () => {
       if (!countries) return [];
 
-      // Fetch states for all countries
-      const statesPromises = countries.map(async (country: any) => {
+      const statesPromises = countries.map(async (country: Country) => {
         const response = await api.get(`/countries/${country.id}/states`);
-        return response.data.map((state: any) => ({
+        return response.data.map((state: Omit<State, "country">) => ({
           ...state,
           country: country,
         }));
@@ -57,13 +73,13 @@ export default function StatesPage() {
       const statesArrays = await Promise.all(statesPromises);
       return statesArrays.flat();
     },
-    enabled: !!countries, // Only run this query when countries data is available
+    enabled: !!countries,
   });
 
   const deleteMutation = useMutation({
     mutationFn: async (id: number) => {
       if (!states) throw new Error("States not loaded");
-      const state = states.find((s: any) => s.id === id);
+      const state = states.find((s) => s.id === id);
       if (!state) throw new Error("State not found");
       const response = await api.delete(
         `/countries/${state.country.id}/states/${id}`
@@ -75,7 +91,7 @@ export default function StatesPage() {
       toast.success("State deleted successfully");
       setOpenAlert(false);
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<ErrorResponse>) => {
       const errorMessage =
         error.response?.data?.message ||
         error.message ||
@@ -84,12 +100,12 @@ export default function StatesPage() {
     },
   });
 
-  const handleEdit = (state: any) => {
+  const handleEdit = (state: State) => {
     setSelectedState(state);
     setOpen(true);
   };
 
-  const handleDelete = (state: any) => {
+  const handleDelete = (state: State) => {
     setSelectedState(state);
     setOpenAlert(true);
   };
@@ -101,25 +117,23 @@ export default function StatesPage() {
   return (
     <div className="p-6">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">States Management</h1>
+        <h1 className="text-2xl font-bold">States</h1>
         <Button onClick={() => setOpen(true)}>Add New State</Button>
       </div>
 
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>ID</TableHead>
             <TableHead>Name</TableHead>
             <TableHead>Country</TableHead>
             <TableHead>Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {states?.map((state: any) => (
+          {states?.map((state) => (
             <TableRow key={state.id}>
-              <TableCell>{state.id}</TableCell>
               <TableCell>{state.name}</TableCell>
-              <TableCell>{state.country?.name}</TableCell>
+              <TableCell>{state.country.name}</TableCell>
               <TableCell className="flex gap-2">
                 <Button
                   variant="outline"
@@ -160,7 +174,9 @@ export default function StatesPage() {
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
-              onClick={() => deleteMutation.mutate(selectedState.id)}
+              onClick={() =>
+                selectedState && deleteMutation.mutate(selectedState.id)
+              }
             >
               Delete
             </AlertDialogAction>

@@ -5,6 +5,7 @@ import * as z from "zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
 import api from "@/lib/services/api";
+import { AxiosError } from "axios";
 import {
   Dialog,
   DialogContent,
@@ -22,6 +23,19 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
+interface FloorPlan {
+  id: number;
+  title: string;
+  size: string;
+  rooms: string;
+  bathrooms: string;
+  price: string;
+}
+
+interface ErrorResponse {
+  message: string;
+}
+
 const formSchema = z.object({
   title: z.string().min(1, "Title is required"),
   size: z.string().min(1, "Size is required"),
@@ -33,7 +47,7 @@ const formSchema = z.object({
 type FloorPlanDialogProps = {
   open: boolean;
   setOpen: (open: boolean) => void;
-  floorPlan?: any;
+  floorPlan?: FloorPlan | null;
   propertyId: string;
   onClose: () => void;
 };
@@ -70,7 +84,7 @@ export function FloorPlanDialog({
       toast.success("Floor plan created successfully");
       handleClose();
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<ErrorResponse>) => {
       const errorMessage =
         error.response?.data?.message ||
         error.message ||
@@ -92,7 +106,7 @@ export function FloorPlanDialog({
       toast.success("Floor plan updated successfully");
       handleClose();
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<ErrorResponse>) => {
       const errorMessage =
         error.response?.data?.message ||
         error.message ||

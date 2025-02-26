@@ -25,6 +25,20 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import api from "@/lib/services/api";
+import { AxiosError } from "axios";
+
+interface FloorPlan {
+  id: number;
+  title: string;
+  size: string;
+  rooms: string;
+  bathrooms: string;
+  price: string;
+}
+
+interface ErrorResponse {
+  message: string;
+}
 
 type Props = {
   params: Promise<{ propertyId: string }>;
@@ -34,11 +48,13 @@ export default function FloorPlansPage({ params }: Props) {
   const id = use(params);
   const [open, setOpen] = useState(false);
   const [openAlert, setOpenAlert] = useState(false);
-  const [selectedFloorPlan, setSelectedFloorPlan] = useState<any>(null);
+  const [selectedFloorPlan, setSelectedFloorPlan] = useState<FloorPlan | null>(
+    null
+  );
   const queryClient = useQueryClient();
   const propertyId = id.propertyId;
 
-  const { data: floorPlans, isLoading } = useQuery({
+  const { data: floorPlans, isLoading } = useQuery<FloorPlan[]>({
     queryKey: ["floorPlans", propertyId],
     queryFn: async () => {
       const response = await api.get(`/properties/${propertyId}/floor-plans`);
@@ -58,7 +74,7 @@ export default function FloorPlansPage({ params }: Props) {
       toast.success("Floor plan deleted successfully");
       setOpenAlert(false);
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<ErrorResponse>) => {
       const errorMessage =
         error.response?.data?.message ||
         error.message ||
@@ -67,12 +83,12 @@ export default function FloorPlansPage({ params }: Props) {
     },
   });
 
-  const handleEdit = (floorPlan: any) => {
+  const handleEdit = (floorPlan: FloorPlan) => {
     setSelectedFloorPlan(floorPlan);
     setOpen(true);
   };
 
-  const handleDelete = (floorPlan: any) => {
+  const handleDelete = (floorPlan: FloorPlan) => {
     setSelectedFloorPlan(floorPlan);
     setOpenAlert(true);
   };
@@ -101,7 +117,7 @@ export default function FloorPlansPage({ params }: Props) {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {floorPlans?.map((floorPlan: any) => (
+          {floorPlans?.map((floorPlan) => (
             <TableRow key={floorPlan.id}>
               <TableCell>{floorPlan.id}</TableCell>
               <TableCell>{floorPlan.title}</TableCell>
@@ -150,7 +166,9 @@ export default function FloorPlansPage({ params }: Props) {
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
-              onClick={() => deleteMutation.mutate(selectedFloorPlan.id)}
+              onClick={() =>
+                selectedFloorPlan && deleteMutation.mutate(selectedFloorPlan.id)
+              }
             >
               Delete
             </AlertDialogAction>

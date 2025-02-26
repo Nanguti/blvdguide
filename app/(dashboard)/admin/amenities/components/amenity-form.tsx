@@ -17,7 +17,6 @@ import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
 import Image from "next/image";
 import api from "@/lib/services/api";
 
