@@ -116,7 +116,7 @@ export default function ForgotPasswordPage() {
           >
             Remember your password?{" "}
             <Link
-              href="/auth/login"
+              href="/login"
               className="text-cyan-600 hover:text-cyan-800 font-medium transition-colors"
             >
               Sign In

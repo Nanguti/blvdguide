@@ -85,8 +85,8 @@ export default function RegisterPage() {
 
             <motion.button
               type="submit"
-              className="w-full py-2 px-4 bg-purple-600 text-white rounded-lg font-medium
-                       hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500
+              className="w-full py-2 px-4 bg-cyan-600 text-white rounded-lg font-medium
+                       hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-cyan-500
                        disabled:opacity-50 transition-all"
               disabled={isLoading}
               whileTap={{ scale: 0.98 }}
@@ -112,8 +112,8 @@ export default function RegisterPage() {
           >
             Already have an account?{" "}
             <Link
-              href="/auth/login"
-              className="text-purple-600 hover:text-purple-800 font-medium transition-colors"
+              href="/login"
+              className="text-cyan-600 hover:text-cyan-800 font-medium transition-colors"
             >
               Sign In
             </Link>

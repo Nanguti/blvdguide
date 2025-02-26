@@ -79,8 +79,8 @@ export default function LoginPage() {
                 Remember me
               </label>
               <Link
-                href="/auth/forgot-password"
-                className="text-blue-600 hover:text-blue-800 transition-colors"
+                href="/forgot-password"
+                className="text-cyan-600 hover:text-cyan-800 transition-colors"
               >
                 Forgot Password?
               </Link>
@@ -88,8 +88,8 @@ export default function LoginPage() {
 
             <motion.button
               type="submit"
-              className="w-full py-2 px-4 bg-blue-600 text-white rounded-lg font-medium
-                       hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500
+              className="w-full py-2 px-4 bg-cyan-600 text-white rounded-lg font-medium
+                       hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-cyan-500
                        disabled:opacity-50 transition-all"
               disabled={isLoading}
               whileTap={{ scale: 0.98 }}
@@ -115,8 +115,8 @@ export default function LoginPage() {
           >
             Do not have an account?{" "}
             <Link
-              href="/auth/register"
-              className="text-blue-600 hover:text-blue-800 font-medium transition-colors"
+              href="/register"
+              className="text-cyan-600 hover:text-cyan-800 font-medium transition-colors"
             >
               Sign Up
             </Link>
