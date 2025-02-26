@@ -60,7 +60,17 @@ export default function PropertiesPage() {
   }
 
   if (!properties.length) {
-    return <div className="text-center py-4">No properties found</div>;
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="text-center py-4">No properties found</div>
+        <Link href="/dashboard/properties/add">
+          <Button>
+            <Plus className="w-4 h-4 mr-2" />
+            Add Property
+          </Button>
+        </Link>
+      </div>
+    );
   }
 
   return (
