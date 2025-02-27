@@ -30,16 +30,17 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-interface Country {
-  id: number;
-  name: string;
-}
-
 interface State {
   id: number;
   name: string;
-  countryId: number;
+  code: string;
+  country_id: number;
   country: Country;
+}
+
+interface Country {
+  id: number;
+  name: string;
 }
 
 interface ErrorResponse {
@@ -48,7 +49,8 @@ interface ErrorResponse {
 
 const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
-  countryId: z.string().min(1, "Country is required"),
+  code: z.string().min(1, "Code is required"),
+  country_id: z.string().min(1, "Country is required"),
 });
 
 type StateDialogProps = {
@@ -69,7 +71,8 @@ export function StateDialog({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
-      countryId: "",
+      code: "",
+      country_id: "",
     },
   });
 
@@ -83,8 +86,10 @@ export function StateDialog({
 
   const createMutation = useMutation({
     mutationFn: async (values: z.infer<typeof formSchema>) => {
-      const response = await api.post(`/countries/${values.countryId}/states`, {
+      const countryId = parseInt(values.country_id);
+      const response = await api.post(`/countries/${countryId}/states`, {
         name: values.name,
+        code: values.code,
       });
       return response.data;
     },
@@ -104,10 +109,12 @@ export function StateDialog({
 
   const updateMutation = useMutation({
     mutationFn: async (values: z.infer<typeof formSchema>) => {
+      const countryId = parseInt(values.country_id);
       const response = await api.put(
-        `/countries/${values.countryId}/states/${state?.id}`,
+        `/countries/${countryId}/states/${state?.id}`,
         {
           name: values.name,
+          code: values.code,
         }
       );
       return response.data;
@@ -130,12 +137,14 @@ export function StateDialog({
     if (state) {
       form.reset({
         name: state.name,
-        countryId: state.country.id.toString(),
+        code: state.code,
+        country_id: state.country_id.toString(),
       });
     } else {
       form.reset({
         name: "",
-        countryId: "",
+        code: "",
+        country_id: "",
       });
     }
   }, [state, form]);
@@ -164,7 +173,7 @@ export function StateDialog({
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
               control={form.control}
-              name="countryId"
+              name="country_id"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Country</FormLabel>
@@ -200,6 +209,26 @@ export function StateDialog({
                   <FormLabel>Name</FormLabel>
                   <FormControl>
                     <Input placeholder="Enter state name" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="code"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Code</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Enter state code"
+                      {...field}
+                      style={{ textTransform: "uppercase" }}
+                      onChange={(e) =>
+                        field.onChange(e.target.value.toUpperCase())
+                      }
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

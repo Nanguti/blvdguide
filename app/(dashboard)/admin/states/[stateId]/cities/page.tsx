@@ -12,8 +12,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { toast } from "react-hot-toast";
-import { StateDialog } from "./components/state-dialog";
-import { Pencil, Trash, MapPin } from "lucide-react";
+import { CityDialog } from "./components/city-dialog";
+import { Pencil, Trash, ArrowLeft, MapPin } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -27,91 +27,73 @@ import {
 import api from "@/lib/services/api";
 import { AxiosError } from "axios";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 
-interface Country {
+interface City {
   id: number;
   name: string;
+  state_id: number;
 }
 
 interface State {
   id: number;
   name: string;
-  code: string;
-  country_id: number;
-  country: Country;
 }
 
 interface ErrorResponse {
   message: string;
 }
 
-export default function StatesPage() {
+export default function CitiesPage() {
+  const params = useParams();
+  const stateId = params.stateId as string;
   const [open, setOpen] = useState(false);
   const [openAlert, setOpenAlert] = useState(false);
-  const [selectedState, setSelectedState] = useState<State | null>(null);
+  const [selectedCity, setSelectedCity] = useState<City | null>(null);
   const queryClient = useQueryClient();
 
-  // First, fetch all countries
-  const { data: countries } = useQuery<Country[]>({
-    queryKey: ["countries"],
+  const { data: state } = useQuery<State>({
+    queryKey: ["state", stateId],
     queryFn: async () => {
-      const response = await api.get("/countries");
+      const response = await api.get(`/states/${stateId}/cities`);
       return response.data;
     },
   });
 
-  // Then fetch states for each country
-  const { data: states, isLoading } = useQuery<State[]>({
-    queryKey: ["states", countries],
+  const { data: cities, isLoading } = useQuery<City[]>({
+    queryKey: ["cities", stateId],
     queryFn: async () => {
-      if (!countries) return [];
-
-      const statesPromises = countries.map(async (country) => {
-        const response = await api.get(`/countries/${country.id}/states`);
-        return response.data.map((state: Omit<State, "country">) => ({
-          ...state,
-          country,
-        }));
-      });
-
-      const statesArrays = await Promise.all(statesPromises);
-      return statesArrays.flat();
+      const response = await api.get(`/states/${stateId}/cities`);
+      return response.data;
     },
-    enabled: !!countries,
   });
 
   const deleteMutation = useMutation({
     mutationFn: async (id: number) => {
-      if (!states) throw new Error("States not loaded");
-      const state = states.find((s) => s.id === id);
-      if (!state) throw new Error("State not found");
-
-      const response = await api.delete(
-        `/countries/${state.country.id}/states/${id}`
-      );
+      const response = await api.delete(`/states/${stateId}/cities/${id}`);
       return response.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["states"] });
-      toast.success("State deleted successfully");
+      queryClient.invalidateQueries({ queryKey: ["cities", stateId] });
+      toast.success("City deleted successfully");
       setOpenAlert(false);
     },
     onError: (error: AxiosError<ErrorResponse>) => {
       const errorMessage =
         error.response?.data?.message ||
         error.message ||
-        "Failed to delete state";
+        "Failed to delete city";
       toast.error(errorMessage);
     },
   });
 
-  const handleEdit = (state: State) => {
-    setSelectedState(state);
+  const handleEdit = (city: City) => {
+    setSelectedCity(city);
     setOpen(true);
   };
 
-  const handleDelete = (state: State) => {
-    setSelectedState(state);
+  const handleDelete = (city: City) => {
+    setSelectedCity(city);
     setOpenAlert(true);
   };
 
@@ -121,43 +103,48 @@ export default function StatesPage() {
 
   return (
     <div className="p-6">
+      <div className="flex items-center gap-4 mb-6">
+        <Button variant="outline" size="icon" asChild>
+          <Link href="/admin/states">
+            <ArrowLeft className="h-4 w-4" />
+          </Link>
+        </Button>
+        <h1 className="text-2xl font-bold">Cities in {state?.name}</h1>
+      </div>
+
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">States</h1>
-        <Button onClick={() => setOpen(true)}>Add New State</Button>
+        <p className="text-muted-foreground">Manage cities in {state?.name}</p>
+        <Button onClick={() => setOpen(true)}>Add New City</Button>
       </div>
 
       <Table>
         <TableHeader>
           <TableRow>
             <TableHead>Name</TableHead>
-            <TableHead>Code</TableHead>
-            <TableHead>Country</TableHead>
             <TableHead>Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {states?.map((state) => (
-            <TableRow key={state.id}>
-              <TableCell>{state.name}</TableCell>
-              <TableCell>{state.code}</TableCell>
-              <TableCell>{state.country.name}</TableCell>
+          {cities?.map((city) => (
+            <TableRow key={city.id}>
+              <TableCell>{city.name}</TableCell>
               <TableCell className="flex gap-2">
                 <Button
                   variant="outline"
                   size="icon"
-                  onClick={() => handleEdit(state)}
+                  onClick={() => handleEdit(city)}
                 >
                   <Pencil className="h-4 w-4" />
                 </Button>
                 <Button
                   variant="destructive"
                   size="icon"
-                  onClick={() => handleDelete(state)}
+                  onClick={() => handleDelete(city)}
                 >
                   <Trash className="h-4 w-4" />
                 </Button>
                 <Button variant="outline" size="icon" asChild>
-                  <Link href={`/admin/states/${state.id}/cities`}>
+                  <Link href={`/admin/cities/${city.id}/areas`}>
                     <MapPin className="h-4 w-4" />
                   </Link>
                 </Button>
@@ -167,11 +154,12 @@ export default function StatesPage() {
         </TableBody>
       </Table>
 
-      <StateDialog
+      <CityDialog
         open={open}
         setOpen={setOpen}
-        state={selectedState}
-        onClose={() => setSelectedState(null)}
+        city={selectedCity}
+        stateId={parseInt(stateId)}
+        onClose={() => setSelectedCity(null)}
       />
 
       <AlertDialog open={openAlert} onOpenChange={setOpenAlert}>
@@ -180,14 +168,14 @@ export default function StatesPage() {
             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
             <AlertDialogDescription>
               This action cannot be undone. This will permanently delete the
-              state and all its associated cities.
+              city and all its associated areas.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
               onClick={() =>
-                selectedState && deleteMutation.mutate(selectedState.id)
+                selectedCity && deleteMutation.mutate(selectedCity.id)
               }
             >
               Delete
