@@ -106,12 +106,12 @@ export default function PropertiesPage() {
                 <TableCell>{property.address}</TableCell>
                 <TableCell className="text-right">
                   <div className="flex justify-end gap-2">
-                    <Link href={`/properties/${property.id}`}>
+                    <Link href={`/admin/properties/${property.id}`}>
                       <Button variant="ghost" size="icon">
                         <Eye className="w-4 h-4" />
                       </Button>
                     </Link>
-                    <Link href={`/dashboard/properties/edit/${property.id}`}>
+                    <Link href={`/admin/properties/edit/${property.id}`}>
                       <Button variant="ghost" size="icon">
                         <Edit className="w-4 h-4" />
                       </Button>
