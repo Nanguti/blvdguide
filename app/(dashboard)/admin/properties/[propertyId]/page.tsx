@@ -14,7 +14,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import api from "@/lib/services/api";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import Image from "next/image";
 
 interface Media {
   id: number;
