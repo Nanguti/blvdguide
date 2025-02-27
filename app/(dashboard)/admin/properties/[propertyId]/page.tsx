@@ -84,9 +84,9 @@ interface Property {
   floor_plans: FloorPlan[];
 }
 
-interface ErrorResponse {
-  message: string;
-}
+// interface ErrorResponse {
+//   message: string;
+// }
 
 export default function PropertyDetailsPage() {
   const params = useParams();
@@ -109,6 +109,7 @@ export default function PropertyDetailsPage() {
   }
 
   const featuredImage = property.media.find((m) => m.is_featured)?.url;
+  console.log(featuredImage);
 
   return (
     <div className="p-6">
