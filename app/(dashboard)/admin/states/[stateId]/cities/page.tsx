@@ -55,11 +55,10 @@ export default function CitiesPage() {
   const { data: state } = useQuery<State>({
     queryKey: ["state", stateId],
     queryFn: async () => {
-      const response = await api.get(`/states/${stateId}/cities`);
+      const response = await api.get(`/states/${stateId}`);
       return response.data;
     },
   });
-
   const { data: cities, isLoading } = useQuery<City[]>({
     queryKey: ["cities", stateId],
     queryFn: async () => {

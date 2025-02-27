@@ -56,7 +56,7 @@ export default function AreasPage() {
   const { data: city } = useQuery<City>({
     queryKey: ["city", cityId],
     queryFn: async () => {
-      const response = await api.get(`/cities/${cityId}/areas`);
+      const response = await api.get(`/cities/${cityId}`);
       return response.data;
     },
   });
