@@ -89,6 +89,7 @@ interface Property {
 // }
 
 export default function PropertyDetailsPage() {
+  const mediaUrl = process.env.NEXT_PUBLIC_MEDIA_URL;
   const params = useParams();
   const propertyId = params.propertyId as string;
 
@@ -107,6 +108,19 @@ export default function PropertyDetailsPage() {
   if (!property) {
     return <div>Property not found</div>;
   }
+
+  // Debug logs
+  console.log("Media URL base:", mediaUrl);
+  console.log("Media items:", property.media);
+  console.log("Floor plans:", property.floor_plans);
+
+  // URL helper function
+  const getFullUrl = (path: string) => {
+    if (!path) return "";
+    // Ensure proper path separation
+    const cleanPath = path.startsWith("/") ? path.slice(1) : path;
+    return `${mediaUrl}/${cleanPath}`;
+  };
 
   const featuredImage = property.media.find((m) => m.is_featured)?.url;
   console.log(featuredImage);
@@ -288,11 +302,10 @@ export default function PropertyDetailsPage() {
                     key={media.id}
                     className="relative aspect-video overflow-hidden rounded-lg"
                   >
-                    <Image
-                      src={`/${media.url}`}
+                    <img
+                      src={getFullUrl(media.url)}
                       alt={property.title}
-                      fill
-                      className="object-cover"
+                      className="absolute inset-0 w-full h-full object-cover"
                     />
                     {media.is_featured && (
                       <div className="absolute top-2 right-2 bg-primary text-primary-foreground px-2 py-1 rounded text-xs">
@@ -333,11 +346,10 @@ export default function PropertyDetailsPage() {
                       </div>
                     </div>
                     <div className="relative aspect-video overflow-hidden rounded-lg">
-                      <Image
-                        src={`/${plan.image}`}
+                      <img
+                        src={getFullUrl(plan.image)}
                         alt={plan.title}
-                        fill
-                        className="object-cover"
+                        className="absolute inset-0 w-full h-full object-cover"
                       />
                     </div>
                   </div>

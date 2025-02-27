@@ -14,10 +14,9 @@ export default function AddProperty() {
 
   const handleSubmit = async (data: PropertyFormData) => {
     try {
-      console.log("AddProperty handleSubmit data:", data);
       const response = await propertyService.createProperty(data);
       console.log("Create property response:", response);
-      router.push("/admin/properties");
+      router.push(`/admin/properties/${response.id}/media`);
     } catch (error: unknown) {
       const errorMessage =
         error instanceof Error ? error.message : "Failed to create property";

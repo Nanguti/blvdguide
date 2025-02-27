@@ -17,6 +17,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { ErrorResponse } from "../../types";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -35,6 +36,7 @@ interface FloorPlanFormProps {
 
 export function FloorPlanForm({ propertyId, onSuccess }: FloorPlanFormProps) {
   const queryClient = useQueryClient();
+  const router = useRouter();
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -71,6 +73,7 @@ export function FloorPlanForm({ propertyId, onSuccess }: FloorPlanFormProps) {
       toast.success("Floor plan created successfully");
       form.reset();
       onSuccess?.();
+      router.push(`/admin/properties/${propertyId}/media`);
     },
     onError: (error: AxiosError<ErrorResponse>) => {
       const errorMessage =
