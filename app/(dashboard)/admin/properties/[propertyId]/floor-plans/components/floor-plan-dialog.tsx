@@ -94,9 +94,9 @@ export function FloorPlanDialog({
   });
 
   const updateMutation = useMutation({
-    mutationFn: async (values: z.infer<typeof formSchema>) => {
+    mutationFn: async (values: z.infer<typeof formSchema> & { id: number }) => {
       const response = await api.put(
-        `/properties/${propertyId}/floor-plans/${floorPlan.id}`,
+        `/properties/${propertyId}/floor-plans/${values.id}`,
         values
       );
       return response.data;
@@ -137,7 +137,7 @@ export function FloorPlanDialog({
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     if (floorPlan) {
-      updateMutation.mutate(values);
+      updateMutation.mutate({ ...values, id: floorPlan.id });
     } else {
       createMutation.mutate(values);
     }
