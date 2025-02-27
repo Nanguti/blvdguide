@@ -55,6 +55,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
       label: "Property Statuses",
       adminOnly: true,
     },
+    { href: "/admin/features", label: "Features", adminOnly: true },
   ].filter((item) => !item.adminOnly || isAdmin);
 
   return (
@@ -171,7 +172,6 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                 <span className="ml-3">Agencies</span>
               </Link>
             </li>
-
             {isAdmin && (
               <li>
                 <Link
