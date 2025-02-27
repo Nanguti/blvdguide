@@ -1,5 +1,8 @@
 import React, { useCallback, useState } from "react";
 import { useRouter } from "next/router";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Search } from "lucide-react";
 
 interface SearchState {
   location: string;
@@ -24,7 +27,22 @@ const PropertySearch: React.FC = () => {
     router.push(`/properties?${searchParams.toString()}`);
   }, [search, router]);
 
-  return <div>{/* Search form implementation */}</div>;
+  return (
+    <div className="flex gap-4">
+      <Input
+        type="text"
+        placeholder="Enter location..."
+        value={search.location}
+        onChange={(e) =>
+          setSearch((prev) => ({ ...prev, location: e.target.value }))
+        }
+      />
+      <Button onClick={handleSearch}>
+        <Search className="w-4 h-4 mr-2" />
+        Search
+      </Button>
+    </div>
+  );
 };
 
 export default PropertySearch;

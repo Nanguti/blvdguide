@@ -81,6 +81,7 @@ export function CategoryDialog({
 
   const updateMutation = useMutation({
     mutationFn: async (values: z.infer<typeof formSchema>) => {
+      if (!category) throw new Error("Category not found");
       const response = await api.put(`/categories/${category.id}`, values);
       return response.data;
     },
@@ -126,17 +127,18 @@ export function CategoryDialog({
     form.reset();
   };
 
-  // Auto-generate slug from name
   useEffect(() => {
-    const name = form.watch("name");
-    if (name) {
-      const slug = name
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/(^-|-$)+/g, "");
-      form.setValue("slug", slug);
-    }
-  }, [form.watch("name")]);
+    const subscription = form.watch((value, { name }) => {
+      if (name === "name") {
+        const nameValue = value.name;
+        if (nameValue) {
+          form.setValue("slug", nameValue.toLowerCase().replace(/\s+/g, "-"));
+        }
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [form]);
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
