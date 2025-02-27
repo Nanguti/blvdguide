@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -78,13 +77,13 @@ export function CityDialog({ open, setOpen, city, onClose }: CityDialogProps) {
     },
   });
 
-  const { data: countries } = useQuery({
-    queryKey: ["countries"],
-    queryFn: async () => {
-      const response = await api.get("/countries");
-      return response.data;
-    },
-  });
+  // const { data: countries } = useQuery({
+  //   queryKey: ["countries"],
+  //   queryFn: async () => {
+  //     const response = await api.get("/countries");
+  //     return response.data;
+  //   },
+  // });
 
   const { data: states } = useQuery({
     queryKey: ["states", form.watch("stateId")],
@@ -97,13 +96,13 @@ export function CityDialog({ open, setOpen, city, onClose }: CityDialogProps) {
     enabled: !!form.watch("stateId"),
   });
 
-  const { data: cities } = useQuery({
-    queryKey: ["cities"],
-    queryFn: async () => {
-      const response = await api.get("/cities");
-      return response.data;
-    },
-  });
+  // const { data: cities } = useQuery({
+  //   queryKey: ["cities"],
+  //   queryFn: async () => {
+  //     const response = await api.get("/cities");
+  //     return response.data;
+  //   },
+  // });
 
   const createMutation = useMutation({
     mutationFn: async (values: FormData) => {
