@@ -4,15 +4,15 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import AreaForm from "../../components/area-form";
 
-type Props = {
-  params: {
-    id: string;
-  };
-  searchParams: { [key: string]: string | string[] | undefined };
-};
+interface Area {
+  id?: number;
+  name: string;
+  description: string;
+  cityId: string;
+}
 
-export default function EditAreaPage({ params }: Props) {
-  const { data: area, isLoading } = useQuery({
+export default function EditAreaPage({ params }: { params: { id: string } }) {
+  const { data: area, isLoading } = useQuery<Area>({
     queryKey: ["area", params.id],
     queryFn: async () => {
       const response = await axios.get(`/api/areas/${params.id}`);
