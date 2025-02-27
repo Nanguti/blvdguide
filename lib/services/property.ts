@@ -68,7 +68,7 @@ export const propertyService = {
   },
 
   getCities: async () => {
-    const response = await api.get("/states/2/cities");
+    const response = await api.get("/cities");
     return response.data;
   },
 
