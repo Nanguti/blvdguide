@@ -162,7 +162,7 @@ export function FloorPlanForm({ propertyId, onSuccess }: FloorPlanFormProps) {
         <FormField
           control={form.control}
           name="image"
-          render={({ field: { onChange, value, ...field } }) => (
+          render={({ field: { onChange } }) => (
             <FormItem>
               <FormLabel>Floor Plan Image</FormLabel>
               <FormControl>
@@ -170,7 +170,6 @@ export function FloorPlanForm({ propertyId, onSuccess }: FloorPlanFormProps) {
                   type="file"
                   accept="image/*"
                   onChange={(e) => onChange(e.target.files)}
-                  {...field}
                 />
               </FormControl>
               <FormMessage />
