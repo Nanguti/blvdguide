@@ -5,6 +5,7 @@ import * as z from "zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
 import api from "@/lib/services/api";
+import { AxiosError } from "axios";
 import {
   Dialog,
   DialogContent,
@@ -29,6 +30,22 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+interface Country {
+  id: number;
+  name: string;
+}
+
+interface State {
+  id: number;
+  name: string;
+  countryId: number;
+  country: Country;
+}
+
+interface ErrorResponse {
+  message: string;
+}
+
 const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
   countryId: z.string().min(1, "Country is required"),
@@ -37,7 +54,7 @@ const formSchema = z.object({
 type StateDialogProps = {
   open: boolean;
   setOpen: (open: boolean) => void;
-  state?: any;
+  state?: State | null;
   onClose: () => void;
 };
 
@@ -56,7 +73,7 @@ export function StateDialog({
     },
   });
 
-  const { data: countries } = useQuery({
+  const { data: countries } = useQuery<Country[]>({
     queryKey: ["countries"],
     queryFn: async () => {
       const response = await api.get("/countries");
@@ -76,7 +93,7 @@ export function StateDialog({
       toast.success("State created successfully");
       handleClose();
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<ErrorResponse>) => {
       const errorMessage =
         error.response?.data?.message ||
         error.message ||
@@ -88,7 +105,7 @@ export function StateDialog({
   const updateMutation = useMutation({
     mutationFn: async (values: z.infer<typeof formSchema>) => {
       const response = await api.put(
-        `/countries/${values.countryId}/states/${state.id}`,
+        `/countries/${values.countryId}/states/${state?.id}`,
         {
           name: values.name,
         }
@@ -100,7 +117,7 @@ export function StateDialog({
       toast.success("State updated successfully");
       handleClose();
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<ErrorResponse>) => {
       const errorMessage =
         error.response?.data?.message ||
         error.message ||
@@ -113,7 +130,7 @@ export function StateDialog({
     if (state) {
       form.reset({
         name: state.name,
-        countryId: state.country_id.toString(),
+        countryId: state.country.id.toString(),
       });
     } else {
       form.reset({
@@ -161,7 +178,7 @@ export function StateDialog({
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {countries?.map((country: any) => (
+                      {countries?.map((country) => (
                         <SelectItem
                           key={country.id}
                           value={country.id.toString()}

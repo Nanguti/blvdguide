@@ -59,13 +59,7 @@ type AreaDialogProps = {
   onClose: () => void;
 };
 
-export function AreaDialog({
-  open,
-  setOpen,
-  area,
-  cityId,
-  onClose,
-}: AreaDialogProps) {
+export function AreaDialog({ open, setOpen, area, onClose }: AreaDialogProps) {
   const queryClient = useQueryClient();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),

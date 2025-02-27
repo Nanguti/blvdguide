@@ -66,29 +66,29 @@ export default function AreasPage() {
   const [selectedArea, setSelectedArea] = useState<Area | null>(null);
   const queryClient = useQueryClient();
 
-  const { data: countries } = useQuery<Country[]>({
-    queryKey: ["countries"],
-    queryFn: async () => {
-      const response = await api.get("/countries");
-      return response.data;
-    },
-  });
+  // const { data: countries } = useQuery<Country[]>({
+  //   queryKey: ["countries"],
+  //   queryFn: async () => {
+  //     const response = await api.get("/countries");
+  //     return response.data;
+  //   },
+  // });
 
-  const { data: states } = useQuery<State[]>({
-    queryKey: ["states"],
-    queryFn: async () => {
-      const response = await api.get("/states");
-      return response.data;
-    },
-  });
+  // const { data: states } = useQuery<State[]>({
+  //   queryKey: ["states"],
+  //   queryFn: async () => {
+  //     const response = await api.get("/states");
+  //     return response.data;
+  //   },
+  // });
 
-  const { data: cities } = useQuery<City[]>({
-    queryKey: ["cities"],
-    queryFn: async () => {
-      const response = await api.get("/cities");
-      return response.data;
-    },
-  });
+  // const { data: cities } = useQuery<City[]>({
+  //   queryKey: ["cities"],
+  //   queryFn: async () => {
+  //     const response = await api.get("/cities");
+  //     return response.data;
+  //   },
+  // });
 
   const { data: areas, isLoading } = useQuery<Area[]>({
     queryKey: ["areas"],

@@ -58,21 +58,21 @@ export default function CitiesPage() {
   const [selectedCity, setSelectedCity] = useState<City | null>(null);
   const queryClient = useQueryClient();
 
-  const { data: countries } = useQuery<Country[]>({
-    queryKey: ["countries"],
-    queryFn: async () => {
-      const response = await api.get("/countries");
-      return response.data;
-    },
-  });
+  // const { data: countries } = useQuery<Country[]>({
+  //   queryKey: ["countries"],
+  //   queryFn: async () => {
+  //     const response = await api.get("/countries");
+  //     return response.data;
+  //   },
+  // });
 
-  const { data: states } = useQuery<State[]>({
-    queryKey: ["states"],
-    queryFn: async () => {
-      const response = await api.get("/states");
-      return response.data;
-    },
-  });
+  // const { data: states } = useQuery<State[]>({
+  //   queryKey: ["states"],
+  //   queryFn: async () => {
+  //     const response = await api.get("/states");
+  //     return response.data;
+  //   },
+  // });
 
   const { data: cities, isLoading } = useQuery<City[]>({
     queryKey: ["cities"],
@@ -181,7 +181,9 @@ export default function CitiesPage() {
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
-              onClick={() => deleteMutation.mutate(selectedCity.id)}
+              onClick={() =>
+                selectedCity && deleteMutation.mutate(selectedCity.id)
+              }
             >
               Delete
             </AlertDialogAction>

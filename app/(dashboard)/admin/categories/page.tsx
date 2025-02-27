@@ -13,7 +13,6 @@ import {
 } from "@/components/ui/table";
 import { toast } from "react-hot-toast";
 import { CategoryDialog } from "./components/category-dialog";
-import { Pencil, Trash } from "lucide-react";
 import api from "@/lib/services/api";
 import { AxiosError } from "axios";
 
