@@ -75,7 +75,7 @@ export default function PropertiesPage() {
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-between items-center mt-10 px-5">
+      <div className="flex justify-between items-center mt-2 px-5">
         <h2 className="text-2xl font-bold">Properties</h2>
         <Link href="/admin/properties/add">
           <Button>
