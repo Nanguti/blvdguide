@@ -115,6 +115,20 @@ export function PropertyTypeDialog({
     }
   }, [propertyType, form]);
 
+  // Generate slug from name
+  useEffect(() => {
+    const subscription = form.watch((value, { name }) => {
+      if (name === "name") {
+        const nameValue = value.name;
+        if (nameValue) {
+          form.setValue("slug", nameValue.toLowerCase().replace(/\s+/g, "-"));
+        }
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [form]);
+
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     if (propertyType) {
       updateMutation.mutate(values);
@@ -128,18 +142,6 @@ export function PropertyTypeDialog({
     onClose();
     form.reset();
   };
-
-  // Auto-generate slug from name
-  useEffect(() => {
-    const name = form.watch("name");
-    if (name) {
-      const slug = name
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/(^-|-$)+/g, "");
-      form.setValue("slug", slug);
-    }
-  }, [form.watch("name")]);
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>

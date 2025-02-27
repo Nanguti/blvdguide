@@ -30,6 +30,25 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+interface Country {
+  id: number;
+  name: string;
+}
+
+interface State {
+  id: number;
+  name: string;
+  countryId: number;
+  country: Country;
+}
+
+interface City {
+  id: number;
+  name: string;
+  stateId: number;
+  state: State;
+}
+
 interface Area {
   id: number;
   name: string;
@@ -180,14 +199,18 @@ export function AreaDialog({ open, setOpen, area, onClose }: AreaDialogProps) {
 
   // Reset stateId and cityId when country changes
   useEffect(() => {
-    form.setValue("stateId", "");
-    form.setValue("cityId", "");
-  }, [form.watch("countryId")]);
+    if (form.watch("countryId")) {
+      form.setValue("stateId", "");
+      form.setValue("cityId", "");
+    }
+  }, [form]);
 
   // Reset cityId when state changes
   useEffect(() => {
-    form.setValue("cityId", "");
-  }, [form.watch("stateId")]);
+    if (form.watch("stateId")) {
+      form.setValue("cityId", "");
+    }
+  }, [form]);
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
@@ -213,7 +236,7 @@ export function AreaDialog({ open, setOpen, area, onClose }: AreaDialogProps) {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {countries?.map((country: any) => (
+                      {countries?.map((country: Country) => (
                         <SelectItem
                           key={country.id}
                           value={country.id.toString()}
@@ -244,7 +267,7 @@ export function AreaDialog({ open, setOpen, area, onClose }: AreaDialogProps) {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {states?.map((state: any) => (
+                      {states?.map((state: State) => (
                         <SelectItem key={state.id} value={state.id.toString()}>
                           {state.name}
                         </SelectItem>
@@ -272,7 +295,7 @@ export function AreaDialog({ open, setOpen, area, onClose }: AreaDialogProps) {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {cities?.map((city: any) => (
+                      {cities?.map((city: City) => (
                         <SelectItem key={city.id} value={city.id.toString()}>
                           {city.name}
                         </SelectItem>

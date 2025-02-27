@@ -30,17 +30,24 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+interface Country {
+  id: number;
+  name: string;
+}
+
 interface State {
   id: number;
   name: string;
+  countryId: number;
+  country: Country;
 }
 
 interface City {
   id: number;
   name: string;
-  slug: string;
   stateId: number;
   state: State;
+  country?: Country;
 }
 
 interface ErrorResponse {
@@ -49,9 +56,10 @@ interface ErrorResponse {
 
 const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
-  countryId: z.string().min(1, "Country is required"),
   stateId: z.string().min(1, "State is required"),
 });
+
+type FormData = z.infer<typeof formSchema>;
 
 type CityDialogProps = {
   open: boolean;
@@ -62,11 +70,10 @@ type CityDialogProps = {
 
 export function CityDialog({ open, setOpen, city, onClose }: CityDialogProps) {
   const queryClient = useQueryClient();
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
-      countryId: "",
       stateId: "",
     },
   });
@@ -80,18 +87,26 @@ export function CityDialog({ open, setOpen, city, onClose }: CityDialogProps) {
   });
 
   const { data: states } = useQuery({
-    queryKey: ["states", form.watch("countryId")],
+    queryKey: ["states", form.watch("stateId")],
     queryFn: async () => {
-      const countryId = form.watch("countryId");
-      if (!countryId) return [];
-      const response = await api.get(`/countries/${countryId}/states`);
+      const stateId = form.watch("stateId");
+      if (!stateId) return [];
+      const response = await api.get(`/states/${stateId}/cities`);
       return response.data;
     },
-    enabled: !!form.watch("countryId"),
+    enabled: !!form.watch("stateId"),
+  });
+
+  const { data: cities } = useQuery({
+    queryKey: ["cities"],
+    queryFn: async () => {
+      const response = await api.get("/cities");
+      return response.data;
+    },
   });
 
   const createMutation = useMutation({
-    mutationFn: async (values: z.infer<typeof formSchema>) => {
+    mutationFn: async (values: FormData) => {
       const response = await api.post(`/states/${values.stateId}/cities`, {
         name: values.name,
       });
@@ -112,7 +127,8 @@ export function CityDialog({ open, setOpen, city, onClose }: CityDialogProps) {
   });
 
   const updateMutation = useMutation({
-    mutationFn: async (values: z.infer<typeof formSchema>) => {
+    mutationFn: async (values: FormData) => {
+      if (!city) throw new Error("City not found");
       const response = await api.put(
         `/states/${values.stateId}/cities/${city.id}`,
         {
@@ -135,23 +151,7 @@ export function CityDialog({ open, setOpen, city, onClose }: CityDialogProps) {
     },
   });
 
-  useEffect(() => {
-    if (city) {
-      form.reset({
-        name: city.name,
-        countryId: city.country.id.toString(),
-        stateId: city.state.id.toString(),
-      });
-    } else {
-      form.reset({
-        name: "",
-        countryId: "",
-        stateId: "",
-      });
-    }
-  }, [city, form]);
-
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
+  const onSubmit = (values: FormData) => {
     if (city) {
       updateMutation.mutate(values);
     } else {
@@ -165,11 +165,6 @@ export function CityDialog({ open, setOpen, city, onClose }: CityDialogProps) {
     form.reset();
   };
 
-  // Reset stateId when country changes
-  useEffect(() => {
-    form.setValue("stateId", "");
-  }, [form.watch("countryId")]);
-
   return (
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent>
@@ -180,36 +175,6 @@ export function CityDialog({ open, setOpen, city, onClose }: CityDialogProps) {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
               control={form.control}
-              name="countryId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Country</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a country" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {countries?.map((country: any) => (
-                        <SelectItem
-                          key={country.id}
-                          value={country.id.toString()}
-                        >
-                          {country.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
               name="stateId"
               render={({ field }) => (
                 <FormItem>
@@ -217,7 +182,6 @@ export function CityDialog({ open, setOpen, city, onClose }: CityDialogProps) {
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
-                    disabled={!form.watch("countryId")}
                   >
                     <FormControl>
                       <SelectTrigger>
@@ -225,7 +189,7 @@ export function CityDialog({ open, setOpen, city, onClose }: CityDialogProps) {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {states?.map((state: any) => (
+                      {states?.map((state: State) => (
                         <SelectItem key={state.id} value={state.id.toString()}>
                           {state.name}
                         </SelectItem>

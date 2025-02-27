@@ -51,11 +51,13 @@ export default function PropertySearch() {
   });
 
   const debouncedLocationSearch = useCallback(
-    debounce((value: string) => {
+    (value: string) => {
       setFilters((prev) => ({ ...prev, location: value }));
-    }, 300),
-    []
+    },
+    [setFilters]
   );
+
+  const debouncedSearch = debounce(debouncedLocationSearch, 300);
 
   const propertyTypes = [
     { label: "House", value: "house" },
@@ -82,7 +84,7 @@ export default function PropertySearch() {
               type="text"
               placeholder="Enter location..."
               className="pl-10 h-12"
-              onChange={(e) => debouncedLocationSearch(e.target.value)}
+              onChange={(e) => debouncedSearch(e.target.value)}
             />
             <AnimatePresence>
               {(locations?.length ?? 0) > 0 && (
