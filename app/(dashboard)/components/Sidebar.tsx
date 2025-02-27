@@ -44,11 +44,6 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
   // Filter property items based on user role
   const propertyItems = [
     { href: "/admin/properties", label: "Properties List", adminOnly: false },
-    {
-      href: "/admin/property-media",
-      label: "Property Media",
-      adminOnly: false,
-    },
     { href: "/admin/property-types", label: "Property Types", adminOnly: true },
     {
       href: "/admin/property-statuses",
