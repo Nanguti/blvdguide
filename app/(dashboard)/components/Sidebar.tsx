@@ -38,9 +38,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
 
   const locationItems = [
     { href: "/admin/countries", label: "Countries" },
-    { href: "/admin/states", label: "States" },
-    { href: "/admin/cities", label: "Cities" },
-    { href: "/admin/areas", label: "Areas" },
+    { href: "/admin/states", label: "Areas" },
   ];
 
   // Filter property items based on user role
