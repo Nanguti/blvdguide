@@ -60,11 +60,25 @@ const formSchema = z
     }
   );
 
+interface User {
+  id: string | number;
+  name: string;
+  email: string;
+}
+
+interface ApiError {
+  response?: {
+    data?: {
+      message?: string;
+    };
+  };
+}
+
 type ProfileFormValues = z.infer<typeof formSchema>;
 
 export default function ProfilePage() {
   const [loading, setLoading] = useState(false);
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
 
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(formSchema),
@@ -111,7 +125,7 @@ export default function ProfilePage() {
           : {}),
       };
 
-      await api.patch(`/users/${user.id}`, updateData);
+      await api.patch(`/users/${user?.id}`, updateData);
       toast.success("Profile updated successfully");
 
       // Update stored user name
@@ -129,9 +143,12 @@ export default function ProfilePage() {
         new_password: "",
         confirm_password: "",
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Failed to update profile:", error);
-      toast.error(error.response?.data?.message || "Failed to update profile");
+      const apiError = error as ApiError;
+      toast.error(
+        apiError.response?.data?.message || "Failed to update profile"
+      );
     } finally {
       setLoading(false);
     }
