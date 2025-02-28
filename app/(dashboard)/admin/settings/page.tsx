@@ -69,8 +69,11 @@ const formSchema = z.object({
 });
 
 interface Settings {
-  id: string | number;
-  [key: string]: any;
+  data: {
+    id: number;
+    [key: string]: unknown;
+  };
+  status: string;
 }
 
 interface ApiError {
@@ -130,7 +133,8 @@ export default function SettingsPage() {
         const settingsData = response.data;
         setSettings(settingsData);
         form.reset(settingsData.data);
-      } catch (error) {
+      } catch (error: unknown) {
+        console.error("Failed to fetch settings:", error);
         toast.error("Failed to load settings");
       }
     };
