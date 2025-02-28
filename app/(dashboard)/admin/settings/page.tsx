@@ -28,9 +28,22 @@ const formSchema = z.object({
   // Site Information
   site_name: z.string().min(1, "Site name is required"),
   site_title: z.string().min(1, "Site title is required"),
-  site_description: z.string(),
-  site_logo: z.string().url("Must be a valid URL").optional(),
-  site_favicon: z.string().url("Must be a valid URL").optional(),
+  site_description: z
+    .string()
+    .nullable()
+    .transform((val) => val || ""),
+  site_logo: z
+    .string()
+    .url("Must be a valid URL")
+    .nullable()
+    .transform((val) => val || "")
+    .optional(),
+  site_favicon: z
+    .string()
+    .url("Must be a valid URL")
+    .nullable()
+    .transform((val) => val || "")
+    .optional(),
 
   // Contact Information
   company_name: z.string().min(1, "Company name is required"),
@@ -39,10 +52,30 @@ const formSchema = z.object({
   office_address: z.string().min(1, "Office address is required"),
 
   // Social Media
-  facebook_url: z.string().url("Must be a valid URL").optional(),
-  twitter_url: z.string().url("Must be a valid URL").optional(),
-  instagram_url: z.string().url("Must be a valid URL").optional(),
-  linkedin_url: z.string().url("Must be a valid URL").optional(),
+  facebook_url: z
+    .string()
+    .url("Must be a valid URL")
+    .nullable()
+    .transform((val) => val || "")
+    .optional(),
+  twitter_url: z
+    .string()
+    .url("Must be a valid URL")
+    .nullable()
+    .transform((val) => val || "")
+    .optional(),
+  instagram_url: z
+    .string()
+    .url("Must be a valid URL")
+    .nullable()
+    .transform((val) => val || "")
+    .optional(),
+  linkedin_url: z
+    .string()
+    .url("Must be a valid URL")
+    .nullable()
+    .transform((val) => val || "")
+    .optional(),
 
   // Real Estate Specific
   currency_symbol: z.string().min(1, "Currency symbol is required"),
@@ -50,22 +83,69 @@ const formSchema = z.object({
   properties_per_page: z.string().transform((val) => parseInt(val, 10)),
   show_featured_properties: z.boolean(),
   enable_map: z.boolean(),
-  default_latitude: z.string().optional(),
-  default_longitude: z.string().optional(),
+  default_latitude: z
+    .string()
+    .nullable()
+    .transform((val) => val || "")
+    .optional(),
+  default_longitude: z
+    .string()
+    .nullable()
+    .transform((val) => val || "")
+    .optional(),
 
   // SEO Settings
-  google_analytics_id: z.string().optional(),
-  meta_keywords: z.string(),
-  meta_description: z.string(),
+  google_analytics_id: z
+    .string()
+    .nullable()
+    .transform((val) => val || "")
+    .optional(),
+  meta_keywords: z
+    .string()
+    .nullable()
+    .transform((val) => val || ""),
+  meta_description: z
+    .string()
+    .nullable()
+    .transform((val) => val || ""),
 
   // Email Settings
-  smtp_host: z.string().optional(),
-  smtp_port: z.string().optional(),
-  smtp_username: z.string().optional(),
-  smtp_password: z.string().optional(),
-  mail_encryption: z.string().optional(),
-  mail_from_address: z.string().email("Invalid email address").optional(),
-  mail_from_name: z.string().optional(),
+  smtp_host: z
+    .string()
+    .nullable()
+    .transform((val) => val || "")
+    .optional(),
+  smtp_port: z
+    .string()
+    .nullable()
+    .transform((val) => val || "")
+    .optional(),
+  smtp_username: z
+    .string()
+    .nullable()
+    .transform((val) => val || "")
+    .optional(),
+  smtp_password: z
+    .string()
+    .nullable()
+    .transform((val) => val || "")
+    .optional(),
+  mail_encryption: z
+    .string()
+    .nullable()
+    .transform((val) => val || "")
+    .optional(),
+  mail_from_address: z
+    .string()
+    .email("Invalid email address")
+    .nullable()
+    .transform((val) => val || "")
+    .optional(),
+  mail_from_name: z
+    .string()
+    .nullable()
+    .transform((val) => val || "")
+    .optional(),
 });
 
 interface Settings {
@@ -141,8 +221,6 @@ export default function SettingsPage() {
 
     fetchSettings();
   }, [form]);
-
-  console.log("Settings here", settings);
 
   const onSubmit = async (values: SettingsFormValues) => {
     console.log("Form submission started");

@@ -157,7 +157,7 @@ export default function PropertyDetailsPage() {
                   Price
                 </p>
                 <p className="text-lg font-semibold">
-                  ${parseFloat(property.price).toLocaleString()}
+                  Kes. {parseFloat(property.price).toLocaleString()}
                 </p>
               </div>
               <div>
@@ -340,7 +340,7 @@ export default function PropertyDetailsPage() {
                           Size: {plan.size} m<sup>2</sup>
                         </p>
                         <p className="text-sm font-medium">
-                          Price: ${parseFloat(plan.price).toLocaleString()}
+                          Price: Kes. {parseFloat(plan.price).toLocaleString()}
                         </p>
                       </div>
                     </div>
