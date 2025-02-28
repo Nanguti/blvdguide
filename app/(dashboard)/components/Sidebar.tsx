@@ -13,6 +13,7 @@ import {
   Users,
   Settings,
   LogOut,
+  CreditCard,
 } from "lucide-react";
 import api from "@/lib/services/api";
 
@@ -196,7 +197,20 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                 </Link>
               </li>
             )}
-
+            {isAdmin && (
+              <li>
+                <Link
+                  href="/admin/subscription-plans"
+                  className={cn(
+                    "flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100",
+                    pathname === "/admin/subscription-plans" && "bg-gray-100"
+                  )}
+                >
+                  <CreditCard className="h-5 w-5" />
+                  <span className="ml-3">Subscription Plans</span>
+                </Link>
+              </li>
+            )}
             <li>
               <Link
                 href="/admin/settings"
