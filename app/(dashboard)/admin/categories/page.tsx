@@ -71,7 +71,7 @@ export default function CategoriesPage() {
   };
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div className="text-center py-4">Loading...</div>;
   }
 
   return (

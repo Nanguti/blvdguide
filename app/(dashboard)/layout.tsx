@@ -4,15 +4,20 @@ import { useState, useEffect } from "react";
 import Navbar from "./components/Navbar";
 import Sidebar from "./components/Sidebar";
 import Footer from "./components/Footer";
-import { Buda } from "next/font/google";
+import { Buda, Roboto_Slab } from "next/font/google";
 import "../globals.css";
 import { useRouter } from "next/navigation";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "react-hot-toast";
 
 const buda = Buda({
-  weight: "300", // Buda has only 300 weight
+  weight: "300",
   subsets: ["latin"],
+});
+
+const robotoSlab = Roboto_Slab({
+  subsets: ["latin"],
+  weight: ["500", "600", "700"],
 });
 
 const queryClient = new QueryClient();
@@ -37,10 +42,10 @@ export default function DashboardLayout({
 
   return (
     <QueryClientProvider client={queryClient}>
-      <html lang="en" className={buda.className}>
+      <html lang="en" className={`${buda.className} ${robotoSlab.className}`}>
         <body className="min-h-screen bg-gray-50">
           {isAuthenticated ? (
-            <div className="flex min-h-screen flex-col">
+            <div className={`flex min-h-screen flex-col`}>
               <Navbar onMenuClick={() => setSidebarOpen(!sidebarOpen)} />
               <div className="flex flex-1 pt-16">
                 <Sidebar

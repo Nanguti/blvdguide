@@ -83,7 +83,7 @@ export default function CountriesPage() {
   };
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div className="text-center py-4">Loading...</div>;
   }
 
   return (
