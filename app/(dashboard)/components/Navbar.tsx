@@ -108,7 +108,7 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
                     Profile
                   </Link>
                   <Link
-                    href="/dashboard/settings"
+                    href="/admin/settings"
                     className="px-4 py-2 hover:bg-gray-100 block"
                   >
                     Settings
