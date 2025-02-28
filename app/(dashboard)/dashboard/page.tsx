@@ -35,7 +35,7 @@ export default function DashboardPage() {
     {
       icon: DollarSign,
       label: "Revenue",
-      value: "$284.5k",
+      value: "Kes. 284.5k",
       trend: "+15.2%",
       color: "bg-yellow-500",
     },
