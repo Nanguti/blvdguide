@@ -102,7 +102,7 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
                   className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border py-2"
                 >
                   <Link
-                    href="/dashboard/profile"
+                    href="/admin/profile"
                     className="px-4 py-2 hover:bg-gray-100 block"
                   >
                     Profile
