@@ -14,6 +14,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import api from "@/lib/services/api";
 import { useParams } from "next/navigation";
+import { format, parseISO } from "date-fns";
 
 interface Media {
   id: number;
@@ -81,6 +82,34 @@ interface Property {
   };
   media: Media[];
   floor_plans: FloorPlan[];
+  inquiries?: Inquiry[];
+  schedules?: Schedule[];
+}
+
+interface Inquiry {
+  id: number;
+  user: {
+    name: string;
+    email: string;
+    phone?: string;
+  };
+  message: string;
+  status: string;
+  created_at: string;
+}
+
+interface Schedule {
+  id: number;
+  user: {
+    name: string;
+    email: string;
+    phone?: string;
+  };
+  date: string;
+  time: string;
+  message: string;
+  status: "pending" | "confirmed" | "cancelled" | "completed";
+  created_at: string;
 }
 
 // interface ErrorResponse {
@@ -101,11 +130,11 @@ export default function PropertyDetailsPage() {
   });
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div className="text-center py-4">Loading...</div>;
   }
 
   if (!property) {
-    return <div>Property not found</div>;
+    return <div className="text-center py-4">Property not found</div>;
   }
 
   // Debug logs
@@ -141,6 +170,8 @@ export default function PropertyDetailsPage() {
           <TabsTrigger value="location">Location</TabsTrigger>
           <TabsTrigger value="media">Media</TabsTrigger>
           <TabsTrigger value="floor-plans">Floor Plans</TabsTrigger>
+          <TabsTrigger value="inquiries">Inquiries</TabsTrigger>
+          <TabsTrigger value="schedules">Schedules</TabsTrigger>
         </TabsList>
 
         <TabsContent value="details" className="space-y-4">
@@ -361,6 +392,125 @@ export default function PropertyDetailsPage() {
                     Add Floor Plan
                   </Button>
                 </Link>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="inquiries" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Property Inquiries</CardTitle>
+              <CardDescription>
+                Manage inquiries for this property
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 gap-6">
+                {property.inquiries?.length === 0 ? (
+                  <div className="text-center py-8 text-muted-foreground">
+                    No inquiries found for this property
+                  </div>
+                ) : (
+                  property.inquiries?.map((inquiry) => (
+                    <div
+                      key={inquiry.id}
+                      className="border rounded-lg p-4 space-y-3"
+                    >
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <h3 className="font-semibold">{inquiry.user.name}</h3>
+                          <div className="text-sm text-muted-foreground">
+                            {format(
+                              new Date(inquiry.created_at),
+                              "MMM d, yyyy"
+                            )}
+                          </div>
+                        </div>
+                        <span
+                          className={`px-2 py-1 rounded-full text-xs capitalize ${
+                            inquiry.status === "new"
+                              ? "bg-yellow-100 text-yellow-800"
+                              : "bg-green-100 text-green-800"
+                          }`}
+                        >
+                          {inquiry.status}
+                        </span>
+                      </div>
+                      <p className="text-sm">{inquiry.message}</p>
+                      <div className="text-sm text-muted-foreground">
+                        <div>{inquiry.user.email}</div>
+                        {inquiry.user.phone && <div>{inquiry.user.phone}</div>}
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="schedules" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Property Viewing Schedules</CardTitle>
+              <CardDescription>
+                Manage viewing schedules for this property
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 gap-6">
+                {property.schedules?.length === 0 ? (
+                  <div className="text-center py-8 text-muted-foreground">
+                    No viewing schedules found for this property
+                  </div>
+                ) : (
+                  property.schedules?.map((schedule) => (
+                    <div
+                      key={schedule.id}
+                      className="border rounded-lg p-4 space-y-3"
+                    >
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <h3 className="font-semibold">
+                            {schedule.user.name}
+                          </h3>
+                          <div className="text-sm text-muted-foreground">
+                            Scheduled for:{" "}
+                            {format(new Date(schedule.date), "MMM d, yyyy")} at{" "}
+                            {format(parseISO(schedule.time), "HH:mm")}
+                          </div>
+                        </div>
+                        <span
+                          className={`px-2 py-1 rounded-full text-xs capitalize ${
+                            schedule.status === "pending"
+                              ? "bg-yellow-100 text-yellow-800"
+                              : schedule.status === "confirmed"
+                              ? "bg-blue-100 text-blue-800"
+                              : schedule.status === "cancelled"
+                              ? "bg-red-100 text-red-800"
+                              : "bg-green-100 text-green-800"
+                          }`}
+                        >
+                          {schedule.status}
+                        </span>
+                      </div>
+                      {schedule.message && (
+                        <p className="text-sm">{schedule.message}</p>
+                      )}
+                      <div className="text-sm text-muted-foreground">
+                        <div>{schedule.user.email}</div>
+                        {schedule.user.phone && (
+                          <div>{schedule.user.phone}</div>
+                        )}
+                      </div>
+                      <div className="text-xs text-muted-foreground">
+                        Requested on:{" "}
+                        {format(new Date(schedule.created_at), "MMM d, yyyy")}
+                      </div>
+                    </div>
+                  ))
+                )}
               </div>
             </CardContent>
           </Card>
