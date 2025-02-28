@@ -34,7 +34,6 @@ interface CellActionProps {
 }
 
 export const CellAction: React.FC<CellActionProps> = ({ data, onRefetch }) => {
-  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
