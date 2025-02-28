@@ -2,7 +2,8 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Plus } from "lucide-react";
+import Link from "next/link";
 import {
   Card,
   CardContent,
@@ -12,7 +13,6 @@ import {
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import api from "@/lib/services/api";
-import Link from "next/link";
 import { useParams } from "next/navigation";
 
 interface Media {
@@ -353,6 +353,14 @@ export default function PropertyDetailsPage() {
                     </div>
                   </div>
                 ))}
+              </div>
+              <div className="mt-6">
+                <Link href={`/admin/properties/${property.id}/floor-plans`}>
+                  <Button className="w-full">
+                    <Plus className="w-4 h-4 mr-2" />
+                    Add Floor Plan
+                  </Button>
+                </Link>
               </div>
             </CardContent>
           </Card>

@@ -15,6 +15,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ErrorResponse } from "../../types";
+import { useRouter } from "next/navigation";
 
 interface MediaUploadProps {
   propertyId: string;
@@ -24,6 +25,7 @@ export function MediaUpload({ propertyId }: MediaUploadProps) {
   const [files, setFiles] = useState<FileList | null>(null);
   const [type, setType] = useState<string>("image");
   const queryClient = useQueryClient();
+  const router = useRouter();
 
   const uploadMutation = useMutation({
     mutationFn: async () => {
@@ -44,7 +46,6 @@ export function MediaUpload({ propertyId }: MediaUploadProps) {
           },
         }
       );
-      console.log(response.data);
       return response.data;
     },
     onSuccess: () => {
@@ -53,6 +54,7 @@ export function MediaUpload({ propertyId }: MediaUploadProps) {
       });
       toast.success("Media uploaded successfully");
       setFiles(null);
+      router.push(`/admin/properties/${propertyId}`);
     },
     onError: (error: AxiosError<ErrorResponse>) => {
       const errorMessage =
