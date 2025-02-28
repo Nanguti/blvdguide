@@ -37,7 +37,7 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
             <Menu className="w-6 h-6" />
           </button>
           <Link href="/dashboard" className="font-semibold text-xl">
-            Dashboard
+            BLVD GUIDE
           </Link>
         </div>
 
