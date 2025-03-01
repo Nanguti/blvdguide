@@ -15,6 +15,7 @@ export interface Property {
   latitude: number | null;
   longitude: number | null;
   propertyType?: { id: number; name: string };
+  property_type?: { id: number; name: string };
   propertyStatus?: { id: number; name: string };
   city?: { id: number; name: string };
   published_status: string;

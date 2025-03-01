@@ -8,6 +8,7 @@ import { Heart, Bed, Bath, Square } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import api from "@/lib/services/api";
 
 interface PropertyCardProps {
   property: Property;
@@ -18,17 +19,26 @@ interface PropertyCardProps {
 export default function PropertyCard({ property, href }: PropertyCardProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [isFavorited, setIsFavorited] = useState(property.is_favorited);
+  const mediaUrl = process.env.NEXT_PUBLIC_BACKEND_BASE_URL;
 
   const handleFavorite = async (e: React.MouseEvent) => {
     e.preventDefault();
     try {
-      await fetch(`/api/properties/${property.id}/favorite`, {
+      await api.post(`/properties/${property.id}/favorite`, {
         method: "POST",
       });
       setIsFavorited(!isFavorited);
     } catch (error) {
       console.error("Error toggling favorite:", error);
     }
+  };
+
+  const getImageUrl = (imagePath: string | null | undefined) => {
+    if (!imagePath) {
+      const randomNum = Math.floor(Math.random() * 4) + 1;
+      return `/images/featured/${randomNum}.jpg`;
+    }
+    return `${mediaUrl}/featured_images/${imagePath}`;
   };
 
   return (
@@ -45,7 +55,7 @@ export default function PropertyCard({ property, href }: PropertyCardProps) {
       <Link href={href}>
         <div className="relative aspect-[4/3]">
           <Image
-            src={property.featured_image || ""}
+            src={getImageUrl(property.featured_image)}
             alt={property.title}
             fill
             className={cn(
@@ -69,7 +79,7 @@ export default function PropertyCard({ property, href }: PropertyCardProps) {
           <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-black/60 to-transparent" />
           <div className="absolute bottom-2 left-2">
             <span className="px-2 py-1 rounded-full text-xs font-medium bg-primary text-white">
-              {property.propertyType?.name}
+              {property.property_type?.name ?? "Property Type"}
             </span>
           </div>
         </div>
