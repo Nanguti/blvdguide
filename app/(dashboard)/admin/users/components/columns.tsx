@@ -14,13 +14,11 @@ export type UserColumn = {
 };
 
 interface ColumnsProps {
-  refetch: () => void;
   onDelete: (id: string) => void;
   deletingId: string | null;
 }
 
 export const columns = ({
-  refetch,
   onDelete,
   deletingId,
 }: ColumnsProps): ColumnDef<UserColumn>[] => [

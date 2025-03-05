@@ -61,7 +61,6 @@ export default function UsersPage() {
       <Separator />
       <DataTable
         columns={columns({
-          refetch,
           onDelete,
           deletingId,
         })}
