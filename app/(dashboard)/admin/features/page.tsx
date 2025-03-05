@@ -15,6 +15,7 @@ import { toast } from "react-hot-toast";
 import { FeatureDialog } from "./components/feature-dialog";
 import api from "@/lib/services/api";
 import { AxiosError } from "axios";
+import Loading from "@/components/Loading";
 
 interface Feature {
   id: number;
@@ -68,7 +69,7 @@ export default function FeaturesPage() {
   };
 
   if (isLoading) {
-    return <div className="text-center py-4">Loading...</div>;
+    return <Loading />;
   }
 
   return (

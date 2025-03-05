@@ -15,6 +15,7 @@ import Link from "next/link";
 import { Property } from "@/types/property";
 import { propertyService } from "@/lib/services/property";
 import { formatCurrency } from "@/lib/utils";
+import Loading from "@/components/Loading";
 
 export default function PropertiesPage() {
   const [properties, setProperties] = useState<Property[]>([]);
@@ -52,7 +53,7 @@ export default function PropertiesPage() {
   };
 
   if (loading) {
-    return <div className="text-center py-4">Loading...</div>;
+    return <Loading />;
   }
 
   if (error) {

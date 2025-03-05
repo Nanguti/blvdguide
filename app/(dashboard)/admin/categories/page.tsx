@@ -15,6 +15,7 @@ import { toast } from "react-hot-toast";
 import { CategoryDialog } from "./components/category-dialog";
 import api from "@/lib/services/api";
 import { AxiosError } from "axios";
+import Loading from "@/components/Loading";
 
 interface Category {
   id: number;
@@ -71,7 +72,7 @@ export default function CategoriesPage() {
   };
 
   if (isLoading) {
-    return <div className="text-center py-4">Loading...</div>;
+    return <Loading />;
   }
 
   return (

@@ -26,6 +26,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import api from "@/lib/services/api";
 import { AxiosError } from "axios";
+import Loading from "@/components/Loading";
 
 interface Country {
   id: number;
@@ -57,22 +58,6 @@ export default function CitiesPage() {
   const [openAlert, setOpenAlert] = useState(false);
   const [selectedCity, setSelectedCity] = useState<City | null>(null);
   const queryClient = useQueryClient();
-
-  // const { data: countries } = useQuery<Country[]>({
-  //   queryKey: ["countries"],
-  //   queryFn: async () => {
-  //     const response = await api.get("/countries");
-  //     return response.data;
-  //   },
-  // });
-
-  // const { data: states } = useQuery<State[]>({
-  //   queryKey: ["states"],
-  //   queryFn: async () => {
-  //     const response = await api.get("/states");
-  //     return response.data;
-  //   },
-  // });
 
   const { data: cities, isLoading } = useQuery<City[]>({
     queryKey: ["cities"],
@@ -112,7 +97,7 @@ export default function CitiesPage() {
   };
 
   if (isLoading) {
-    return <div className="text-center py-4">Loading...</div>;
+    return <Loading />;
   }
 
   return (

@@ -27,6 +27,7 @@ import {
 import api from "@/lib/services/api";
 import { AxiosError } from "axios";
 import Link from "next/link";
+import Loading from "@/components/Loading";
 
 interface Country {
   id: number;
@@ -116,7 +117,7 @@ export default function StatesPage() {
   };
 
   if (isLoading) {
-    return <div className="text-center py-4">Loading...</div>;
+    return <Loading />;
   }
 
   return (

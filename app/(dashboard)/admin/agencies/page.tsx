@@ -15,6 +15,7 @@ import Image from "next/image";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
 import api from "@/lib/services/api";
+import Loading from "@/components/Loading";
 
 interface Agency {
   id: number;
@@ -65,7 +66,7 @@ export default function AgenciesPage() {
   };
 
   if (isLoading) {
-    return <div className="text-center py-4">Loading...</div>;
+    return <Loading />;
   }
 
   return (

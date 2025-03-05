@@ -26,6 +26,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import api from "@/lib/services/api";
 import { AxiosError } from "axios";
+import Loading from "@/components/Loading";
 
 interface Country {
   id: number;
@@ -83,7 +84,7 @@ export default function CountriesPage() {
   };
 
   if (isLoading) {
-    return <div className="text-center py-4">Loading...</div>;
+    return <Loading />;
   }
 
   return (
