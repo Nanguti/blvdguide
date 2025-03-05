@@ -14,9 +14,13 @@ import api from "@/lib/services/api";
 
 export default function UsersPage() {
   const [open, setOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
-  const { data: users = [], refetch } = useQuery({
+  const {
+    data: users = [],
+    refetch,
+    isLoading,
+  } = useQuery({
     queryKey: ["users"],
     queryFn: async () => {
       const response = await api.get("/users");
@@ -24,11 +28,10 @@ export default function UsersPage() {
     },
     refetchOnWindowFocus: true,
   });
-  console.log(users);
 
   const onDelete = async (id: string) => {
     try {
-      setLoading(true);
+      setDeletingId(id);
       await api.delete(`/users/${id}`);
       await refetch();
       toast.success("User deleted successfully");
@@ -36,7 +39,7 @@ export default function UsersPage() {
       console.log(error);
       toast.error("Something went wrong");
     } finally {
-      setLoading(false);
+      setDeletingId(null);
     }
   };
 
@@ -57,11 +60,14 @@ export default function UsersPage() {
       </div>
       <Separator />
       <DataTable
-        columns={columns(refetch)}
+        columns={columns({
+          refetch,
+          onDelete,
+          deletingId,
+        })}
         data={users}
         searchKey="email"
-        loading={loading}
-        onDelete={onDelete}
+        loading={isLoading}
       />
       <UserModal
         open={open}

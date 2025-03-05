@@ -13,7 +13,17 @@ export type UserColumn = {
   created_at: string;
 };
 
-export const columns = (refetch: () => void): ColumnDef<UserColumn>[] => [
+interface ColumnsProps {
+  refetch: () => void;
+  onDelete: (id: string) => void;
+  deletingId: string | null;
+}
+
+export const columns = ({
+  refetch,
+  onDelete,
+  deletingId,
+}: ColumnsProps): ColumnDef<UserColumn>[] => [
   {
     accessorKey: "name",
     header: "Name",
@@ -38,6 +48,12 @@ export const columns = (refetch: () => void): ColumnDef<UserColumn>[] => [
   },
   {
     id: "actions",
-    cell: ({ row }) => <CellAction data={row.original} onRefetch={refetch} />,
+    cell: ({ row }) => (
+      <CellAction
+        data={row.original}
+        onDelete={onDelete}
+        deletingId={deletingId}
+      />
+    ),
   },
 ];

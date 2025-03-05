@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Edit, MoreHorizontal, Trash } from "lucide-react";
-import toast from "react-hot-toast";
+import { Loader2 } from "lucide-react";
 
 import {
   DropdownMenu,
@@ -25,32 +25,22 @@ import {
 
 import { UserColumn } from "./columns";
 import UserModal from "./UserModal";
-import api from "@/lib/services/api";
 
 interface CellActionProps {
   data: UserColumn;
-  onRefetch: () => void;
+  onDelete: (id: string) => void;
+  deletingId?: string | null;
 }
 
-export const CellAction: React.FC<CellActionProps> = ({ data, onRefetch }) => {
-  const [loading, setLoading] = useState(false);
+export const CellAction: React.FC<CellActionProps> = ({
+  data,
+  onDelete,
+  deletingId,
+}) => {
   const [open, setOpen] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
 
-  const onDelete = async () => {
-    try {
-      setLoading(true);
-      await api.delete(`/users/${data.id}`);
-      setOpen(false);
-      onRefetch();
-      toast.success("User deleted successfully");
-    } catch (error) {
-      console.log(error);
-      toast.error("Something went wrong");
-    } finally {
-      setLoading(false);
-    }
-  };
+  const isDeleting = deletingId === data.id;
 
   return (
     <>
@@ -63,9 +53,19 @@ export const CellAction: React.FC<CellActionProps> = ({ data, onRefetch }) => {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={loading}>Cancel</AlertDialogCancel>
-            <AlertDialogAction disabled={loading} onClick={onDelete}>
-              Delete
+            <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              disabled={isDeleting}
+              onClick={() => {
+                onDelete(data.id);
+                setOpen(false);
+              }}
+            >
+              {isDeleting ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                "Delete"
+              )}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -75,7 +75,6 @@ export const CellAction: React.FC<CellActionProps> = ({ data, onRefetch }) => {
         onClose={() => setShowEditModal(false)}
         onConfirm={() => {
           setShowEditModal(false);
-          onRefetch();
         }}
         initialData={data}
       />
@@ -92,8 +91,12 @@ export const CellAction: React.FC<CellActionProps> = ({ data, onRefetch }) => {
             <Edit className="mr-2 h-4 w-4" />
             Edit
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setOpen(true)}>
-            <Trash className="mr-2 h-4 w-4" />
+          <DropdownMenuItem onClick={() => setOpen(true)} disabled={isDeleting}>
+            {isDeleting ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              <Trash className="mr-2 h-4 w-4" />
+            )}
             Delete
           </DropdownMenuItem>
         </DropdownMenuContent>
