@@ -12,7 +12,7 @@ import api from "@/lib/services/api";
 
 interface PropertyCardProps {
   property: Property;
-  href: string;
+  href?: string;
   priority?: boolean;
 }
 
@@ -52,7 +52,7 @@ export default function PropertyCard({ property, href }: PropertyCardProps) {
       onHoverEnd={() => setIsHovered(false)}
       className="group bg-card rounded-xl overflow-hidden border shadow-sm hover:shadow-lg transition-shadow"
     >
-      <Link href={href}>
+      <Link href={`/properties/view/${property.id}`} className="block">
         <div className="relative aspect-[4/3]">
           <Image
             src={getImageUrl(property.featured_image)}

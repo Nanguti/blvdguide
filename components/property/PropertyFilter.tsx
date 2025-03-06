@@ -30,11 +30,13 @@ interface Amenity {
 interface PropertyFilterProps {
   initialFilters: FilterType;
   onFilterChange: (filters: FilterType) => void;
+  propertyType?: string;
 }
 
 export default function PropertyFilter({
   initialFilters,
   onFilterChange,
+  propertyType,
 }: PropertyFilterProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [filters, setFilters] = useState(initialFilters);
@@ -60,7 +62,18 @@ export default function PropertyFilter({
   }, [filters, onFilterChange]);
 
   const handleReset = () => {
-    setFilters({});
+    setFilters({
+      status:
+        propertyType === "for-sale"
+          ? "sale"
+          : propertyType === "for-rent"
+          ? "rent"
+          : propertyType === "new-development"
+          ? "new"
+          : propertyType === "recently-sold"
+          ? "sold"
+          : undefined,
+    });
     setPriceRange([0, 1000000]);
     setAreaRange([0, 10000]);
   };
@@ -76,7 +89,7 @@ export default function PropertyFilter({
           <Filter className="w-4 h-4" />
           Filters
         </Button>
-        {Object.keys(filters).length > 0 && (
+        {Object.keys(filters).length > 1 && (
           <Button
             variant="ghost"
             onClick={handleReset}

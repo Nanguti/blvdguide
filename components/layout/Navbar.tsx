@@ -18,7 +18,7 @@ const navigation = [
   { name: "Home", href: "/" },
   {
     name: "Properties",
-    href: "/properties",
+    href: "#",
     submenu: [
       { name: "For Sale", href: "/properties/for-sale" },
       { name: "For Rent", href: "/properties/for-rent" },
@@ -46,20 +46,31 @@ export default function Navbar() {
           <div className="hidden md:flex items-center gap-6">
             {navigation.map((item) => (
               <div key={item.name} className="relative group">
-                <Link
-                  href={item.href}
-                  className={cn(
-                    "text-md transition-colors hover:text-primary py-2 flex items-center gap-1",
-                    pathname === item.href
-                      ? "text-primary font-medium"
-                      : "text-muted-foreground"
-                  )}
-                >
-                  {item.name}
-                  {item.submenu && (
+                {item.submenu ? (
+                  <button
+                    className={cn(
+                      "text-md transition-colors hover:text-primary py-2 flex items-center gap-1",
+                      pathname?.startsWith(item.href)
+                        ? "text-primary font-medium"
+                        : "text-muted-foreground"
+                    )}
+                  >
+                    {item.name}
                     <ChevronDown className="w-4 h-4 transition-transform group-hover:rotate-180" />
-                  )}
-                </Link>
+                  </button>
+                ) : (
+                  <Link
+                    href={item.href}
+                    className={cn(
+                      "text-md transition-colors hover:text-primary py-2 flex items-center gap-1",
+                      pathname === item.href
+                        ? "text-primary font-medium"
+                        : "text-muted-foreground"
+                    )}
+                  >
+                    {item.name}
+                  </Link>
+                )}
                 {item.submenu && (
                   <div className="absolute left-0 top-full hidden group-hover:block bg-background border rounded-md shadow-lg py-2 min-w-[200px]">
                     {item.submenu.map((subItem) => (
@@ -86,18 +97,24 @@ export default function Navbar() {
         {/* Desktop Actions */}
         <div className="flex items-center gap-4">
           <div className="hidden sm:flex items-center gap-2">
-            <Link href="/my/favorites">
-              <Button variant="ghost" size="icon">
+            <Button variant="ghost" size="icon" asChild>
+              <Link href="/my/favorites">
                 <Heart className="w-5 h-5" />
-              </Button>
-            </Link>
-            <Link href="/dashboard">
-              <Button variant="ghost" size="icon">
+                <span className="sr-only">Favorites</span>
+              </Link>
+            </Button>
+            <Button variant="ghost" size="icon" asChild>
+              <Link href="/dashboard">
                 <User className="w-5 h-5" />
-              </Button>
-            </Link>
+                <span className="sr-only">Dashboard</span>
+              </Link>
+            </Button>
           </div>
-          <Button className="hidden sm:flex">List Property</Button>
+          <Button asChild>
+            <Link href="/list-property" className="hidden sm:block">
+              List Property
+            </Link>
+          </Button>
 
           {/* Mobile Menu Button */}
           <Button
@@ -107,6 +124,7 @@ export default function Navbar() {
             onClick={() => setMobileMenuOpen(true)}
           >
             <Menu className="w-5 h-5" />
+            <span className="sr-only">Menu</span>
           </Button>
         </div>
       </nav>
@@ -120,57 +138,67 @@ export default function Navbar() {
           <div className="flex flex-col px-4 py-6">
             {navigation.map((item) => (
               <div key={item.name}>
-                <SheetClose asChild>
-                  <Link
-                    href={item.href}
-                    className={cn(
-                      "py-3 text-base transition-colors hover:text-primary border-b block flex items-center gap-1",
-                      pathname === item.href
-                        ? "text-primary font-medium"
-                        : "text-muted-foreground"
-                    )}
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    {item.name}
-                    {item.submenu && <ChevronDown className="w-4 h-4" />}
-                  </Link>
-                </SheetClose>
-                {item.submenu && (
-                  <div className="ml-4">
-                    {item.submenu.map((subItem) => (
-                      <SheetClose asChild key={subItem.name}>
-                        <Link
-                          href={subItem.href}
-                          className={cn(
-                            "py-2 text-sm transition-colors hover:text-primary border-b block",
-                            pathname === subItem.href
-                              ? "text-primary font-medium"
-                              : "text-muted-foreground"
-                          )}
-                          onClick={() => setMobileMenuOpen(false)}
-                        >
-                          {subItem.name}
-                        </Link>
-                      </SheetClose>
-                    ))}
+                {item.submenu ? (
+                  <div className="py-3 text-base border-b">
+                    <div className="flex items-center gap-1 text-muted-foreground">
+                      {item.name}
+                      <ChevronDown className="w-4 h-4" />
+                    </div>
+                    <div className="ml-4 mt-2">
+                      {item.submenu.map((subItem) => (
+                        <SheetClose asChild key={subItem.name}>
+                          <Link
+                            href={subItem.href}
+                            className={cn(
+                              "py-2 text-sm transition-colors hover:text-primary block",
+                              pathname === subItem.href
+                                ? "text-primary font-medium"
+                                : "text-muted-foreground"
+                            )}
+                          >
+                            {subItem.name}
+                          </Link>
+                        </SheetClose>
+                      ))}
+                    </div>
                   </div>
+                ) : (
+                  <SheetClose asChild>
+                    <Link
+                      href={item.href}
+                      className={cn(
+                        "py-3 text-base transition-colors hover:text-primary border-b block",
+                        pathname === item.href
+                          ? "text-primary font-medium"
+                          : "text-muted-foreground"
+                      )}
+                    >
+                      {item.name}
+                    </Link>
+                  </SheetClose>
                 )}
               </div>
             ))}
             <div className="flex flex-col gap-4 mt-6">
               <div className="flex gap-4">
-                <Button variant="ghost" size="icon" className="flex-1">
-                  <Heart className="w-5 h-5 mr-2" />
-                  Favorites
+                <Button variant="ghost" asChild className="flex-1">
+                  <Link href="/my/favorites">
+                    <Heart className="w-5 h-5 mr-2" />
+                    Favorites
+                  </Link>
                 </Button>
-                <Link href="/dashboard">
-                  <Button variant="ghost" size="icon" className="flex-1">
+                <Button variant="ghost" asChild className="flex-1">
+                  <Link href="/dashboard">
                     <User className="w-5 h-5 mr-2" />
                     Account
-                  </Button>
-                </Link>
+                  </Link>
+                </Button>
               </div>
-              <Button className="w-full">List Property</Button>
+              <Button asChild>
+                <Link href="/list-property" className="w-full">
+                  List Property
+                </Link>
+              </Button>
             </div>
           </div>
         </SheetContent>

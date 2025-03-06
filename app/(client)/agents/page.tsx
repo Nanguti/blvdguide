@@ -59,7 +59,6 @@ const sampleAgents: Agent[] = [
     },
     featured: true,
   },
-  // Add more sample agents...
 ];
 
 const AgentCard = ({ agent }: { agent: Agent }) => {
