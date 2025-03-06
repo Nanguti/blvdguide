@@ -155,19 +155,20 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                 </ul>
               )}
             </li>
-
-            <li>
-              <Link
-                href="/admin/agencies"
-                className={cn(
-                  "flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100",
-                  pathname === "/admin/agencies" && "bg-gray-100"
-                )}
-              >
-                <Building2 className="h-5 w-5" />
-                <span className="ml-3">Agencies</span>
-              </Link>
-            </li>
+            {isAdmin && (
+              <li>
+                <Link
+                  href="/admin/agencies"
+                  className={cn(
+                    "flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100",
+                    pathname === "/admin/agencies" && "bg-gray-100"
+                  )}
+                >
+                  <Building2 className="h-5 w-5" />
+                  <span className="ml-3">Agencies</span>
+                </Link>
+              </li>
+            )}
             {isAdmin && (
               <li>
                 <Link
