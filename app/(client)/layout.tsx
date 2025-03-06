@@ -6,6 +6,8 @@ import "../globals.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import { Suspense } from "react";
+import Loading from "@/components/Loading";
 
 const buda = Buda({
   weight: "300",
@@ -113,7 +115,9 @@ export default function RootLayout({
           className={`${buda.variable} antialiased min-h-screen flex flex-col overflow-x-hidden`}
         >
           <Navbar />
-          <main className="flex-1">{children}</main>
+          <main className="flex-1">
+            <Suspense fallback={<Loading />}>{children}</Suspense>
+          </main>
           <Footer />
         </body>
       </html>
