@@ -16,10 +16,11 @@ export type CreatePropertyData = Omit<Property, "id" | "featured_image"> & {
 
 export const propertyService = {
   // Get properties with filters
-  getProperties: async (type: string, filters: PropertyFilter) => {
-    const response = await axiosInstance.get(`/properties/filter/${type}`, {
-      params: filters,
-    });
+  getProperties: async (filters: PropertyFilter, type?: string) => {
+    const response = await axiosInstance.get(
+      type ? `/properties/filter/${type}` : "/properties",
+      { params: filters }
+    );
     return response.data;
   },
 

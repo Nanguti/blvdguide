@@ -23,10 +23,10 @@ export default function PropertiesPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    loadProperties();
+    fetchProperties();
   }, []);
 
-  const loadProperties = async () => {
+  const fetchProperties = async () => {
     try {
       setLoading(true);
       setError(null);
@@ -35,7 +35,6 @@ export default function PropertiesPage() {
     } catch (error) {
       console.error("Error loading properties:", error);
       setError("Failed to load properties");
-      setProperties([]);
     } finally {
       setLoading(false);
     }

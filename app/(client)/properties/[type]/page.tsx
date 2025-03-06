@@ -28,7 +28,7 @@ export default function PropertiesTypePage() {
 
   const { data: propertiesData, status } = useQuery({
     queryKey: ["properties", propertyType, filters],
-    queryFn: () => propertyService.getProperties(propertyType, filters),
+    queryFn: () => propertyService.getProperties(filters, propertyType),
   });
 
   const properties = propertiesData?.data || [];
