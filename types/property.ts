@@ -36,6 +36,7 @@ export interface PropertyFilter {
   city_id?: string;
   area_id?: string;
   sort?: string;
+  page?: number;
 }
 
 export interface Amenity {

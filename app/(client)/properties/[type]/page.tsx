@@ -9,7 +9,6 @@ import { Property, PropertyFilter as FilterType } from "@/types/property";
 import { useParams } from "next/navigation";
 import { propertyService } from "@/lib/services/property";
 
-// Property type configurations
 const propertyTypes = {
   "for-sale": { title: "Properties for Sale", status: "sale" },
   "for-rent": { title: "Properties for Rent", status: "rent" },

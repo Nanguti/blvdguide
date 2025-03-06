@@ -1,5 +1,5 @@
-import { axiosInstance } from "../axios";
 import { Property, PropertyFilter } from "@/types/property";
+import api from "./api";
 
 // interface PropertyResponse {
 //   data: Property[];
@@ -17,7 +17,7 @@ export type CreatePropertyData = Omit<Property, "id" | "featured_image"> & {
 export const propertyService = {
   // Get properties with filters
   getProperties: async (filters: PropertyFilter, type?: string) => {
-    const response = await axiosInstance.get(
+    const response = await api.get(
       type ? `/properties/filter/${type}` : "/properties",
       { params: filters }
     );
@@ -26,7 +26,7 @@ export const propertyService = {
 
   // Get property by ID
   getProperty: async (id: number) => {
-    const response = await axiosInstance.get(`/properties/${id}`);
+    const response = await api.get(`/properties/${id}`);
     return response.data;
   },
 
@@ -43,7 +43,7 @@ export const propertyService = {
       formData.append("featured_image", data.featured_image);
     }
 
-    const response = await axiosInstance.post("/properties", formData, {
+    const response = await api.post("/properties", formData, {
       headers: { "Content-Type": "multipart/form-data" },
     });
     return response.data;
@@ -53,46 +53,46 @@ export const propertyService = {
     id: number,
     data: Partial<CreatePropertyData>
   ): Promise<SinglePropertyResponse> => {
-    const response = await axiosInstance.post(`/properties/${id}`, data);
+    const response = await api.post(`/properties/${id}`, data);
     return response.data;
   },
 
   deleteProperty: (id: number) => {
-    return axiosInstance.delete(`/properties/${id}`);
+    return api.delete(`/properties/${id}`);
   },
 
   // Get property types
   getPropertyTypes: async () => {
-    const response = await axiosInstance.get("/property-types");
+    const response = await api.get("/property-types");
     return response.data;
   },
 
   // Get property statuses
   getPropertyStatuses: async () => {
-    const response = await axiosInstance.get("/property-statuses");
+    const response = await api.get("/property-statuses");
     return response.data;
   },
 
   // Get cities
   getCities: async () => {
-    const response = await axiosInstance.get("/cities");
+    const response = await api.get("/cities");
     return response.data;
   },
 
   // Get amenities
   getAmenities: async () => {
-    const response = await axiosInstance.get("/amenities");
+    const response = await api.get("/amenities");
     return response.data;
   },
 
   // Get featured properties
   getFeaturedProperties: async () => {
-    const response = await axiosInstance.get("/featured-properties");
+    const response = await api.get("/featured-properties");
     return response.data;
   },
 
   async toggleFavorite(id: string) {
-    const response = await axiosInstance.post(`/properties/${id}/favorite`);
+    const response = await api.post(`/properties/${id}/favorite`);
     return response.data;
   },
 };

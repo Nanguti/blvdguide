@@ -20,6 +20,7 @@ const navigation = [
     name: "Properties",
     href: "#",
     submenu: [
+      { name: "All Properties", href: "/all-properties" },
       { name: "For Sale", href: "/properties/for-sale" },
       { name: "For Rent", href: "/properties/for-rent" },
       { name: "New Development", href: "/properties/new-development" },
