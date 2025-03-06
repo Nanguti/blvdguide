@@ -1,10 +1,10 @@
 import { axiosInstance } from "../axios";
 import { Property, PropertyFilter } from "@/types/property";
 
-interface PropertyResponse {
-  data: Property[];
-  // Add other response fields if needed
-}
+// interface PropertyResponse {
+//   data: Property[];
+//   // Add other response fields if needed
+// }
 
 interface SinglePropertyResponse {
   data: Property;

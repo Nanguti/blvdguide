@@ -20,7 +20,7 @@ export default function PropertyCard({ property, href }: PropertyCardProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [isFavorited, setIsFavorited] = useState(property.is_favorited);
   const mediaUrl = process.env.NEXT_PUBLIC_BACKEND_BASE_URL;
-
+  console.log(href);
   const handleFavorite = async (e: React.MouseEvent) => {
     e.preventDefault();
     try {
