@@ -73,6 +73,12 @@ export const propertyService = {
     return response.data;
   },
 
+  // Get cities
+  getCities: async () => {
+    const response = await axiosInstance.get("/cities");
+    return response.data;
+  },
+
   // Get amenities
   getAmenities: async () => {
     const response = await axiosInstance.get("/amenities");
