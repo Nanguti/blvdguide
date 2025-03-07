@@ -3,56 +3,45 @@
 import { useParams } from "next/navigation";
 import { motion } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
-import { Loader2, MapPin, Bed, Bath, Ruler, Heart, Share2 } from "lucide-react";
+import {
+  MapPin,
+  Bed,
+  Bath,
+  Ruler,
+  Heart,
+  Share2,
+  Calendar,
+  Car,
+  Building2,
+  CheckCircle2,
+} from "lucide-react";
 import Image from "next/image";
-
-// Mock API call (replace with real API request)
-const fetchProperty = async (id: string) => {
-  return Promise.resolve({
-    id,
-    title: "Modern Garden Villa",
-    description: "Beautiful villa with expansive gardens and pool",
-    price: 850000,
-    type: "Villa",
-    status: "For Sale",
-    bedrooms: 4,
-    bathrooms: 3,
-    area: 3200,
-    address: "123 Garden Lane",
-    featured_image: "/images/featured/1.jpg",
-    images: ["/images/featured/1.jpg", "/images/featured/2.jpg"],
-    agent: {
-      id: "1",
-      name: "John Smith",
-      avatar: "/images/agents/1.jpg",
-      experience: 8,
-      phone: "123-456-7890",
-    },
-  });
-};
+import { propertyService } from "@/lib/services/property";
+import Loading from "@/components/Loading";
+import { Badge } from "@/components/ui/badge";
+import { formatDate } from "@/lib/utils";
 
 export default function PropertyDetailPage() {
   const params = useParams();
   const id = params.id as string;
+  const mediaUrl = process.env.NEXT_PUBLIC_BACKEND_BASE_URL;
 
   const {
-    data: property,
-    status,
+    data: propertyData,
     isLoading,
+    error,
   } = useQuery({
     queryKey: ["property", id],
-    queryFn: () => fetchProperty(id),
+    queryFn: () => propertyService.getProperty(Number(id)),
   });
 
-  if (isLoading || status === "pending") {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <Loader2 className="w-12 h-12 animate-spin text-primary" />
-      </div>
-    );
+  const property = propertyData;
+
+  if (isLoading) {
+    return <Loading />;
   }
 
-  if (!property) {
+  if (error || !property) {
     return (
       <div className="text-center py-20">
         <h3 className="text-2xl font-semibold text-gray-900">
@@ -61,6 +50,14 @@ export default function PropertyDetailPage() {
       </div>
     );
   }
+
+  const getImageUrl = (imagePath: string | null | undefined) => {
+    if (!imagePath) {
+      const randomNum = Math.floor(Math.random() * 4) + 1;
+      return `/images/featured/${randomNum}.jpg`;
+    }
+    return `${mediaUrl}/featured_images/${imagePath}`;
+  };
 
   return (
     <motion.div
@@ -78,17 +75,27 @@ export default function PropertyDetailPage() {
           className="h-full"
         >
           <Image
-            src={property.featured_image}
+            src={getImageUrl(property.featured_image)}
             alt={property.title}
             fill
             className="rounded-b-3xl shadow-lg object-cover"
             priority
           />
         </motion.div>
-        <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-          <h1 className="text-4xl md:text-5xl font-bold text-white drop-shadow-lg">
-            {property.title}
-          </h1>
+        <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center">
+          <div className="container px-4">
+            {property.featured === 1 && (
+              <Badge className="mb-4 bg-primary/90 hover:bg-primary">
+                Featured Property
+              </Badge>
+            )}
+            <h1 className="text-4xl md:text-5xl font-bold text-white drop-shadow-lg text-center">
+              {property.title}
+            </h1>
+            <p className="text-white/90 text-center mt-4 text-lg">
+              {property.address}
+            </p>
+          </div>
         </div>
       </div>
 
@@ -98,18 +105,31 @@ export default function PropertyDetailPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
           {/* Left Section */}
           <div>
-            <motion.h2
+            <motion.div
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="text-3xl font-semibold text-gray-900"
             >
-              Ksh.{property?.price?.toLocaleString() || "N/A"} -{" "}
-              {property?.status || "Unknown"}
-            </motion.h2>
-            <p className="text-gray-600 mt-2">{property.description}</p>
+              <div className="flex items-center gap-4">
+                <h2 className="text-3xl font-semibold text-gray-900">
+                  Ksh.{Number(property.price).toLocaleString()}
+                </h2>
+                <Badge variant="outline" className="h-fit">
+                  {property.type === "sale" ? "For Sale" : "For Rent"}
+                </Badge>
+              </div>
+              <div className="flex items-center gap-2 mt-2">
+                <Badge variant="secondary" className="bg-primary/10">
+                  {property.property_status.name}
+                </Badge>
+                <Badge variant="secondary" className="bg-primary/10">
+                  {property.property_type.name}
+                </Badge>
+              </div>
+              <p className="text-gray-600 mt-6">{property.description}</p>
+            </motion.div>
 
-            <div className="mt-6 grid grid-cols-2 gap-4">
+            <div className="mt-8 grid grid-cols-2 gap-6">
               <div className="flex items-center gap-2">
                 <Bed className="w-6 h-6 text-primary" />
                 <span>{property.bedrooms} Bedrooms</span>
@@ -123,84 +143,121 @@ export default function PropertyDetailPage() {
                 <span>{property.area} sq ft</span>
               </div>
               <div className="flex items-center gap-2">
-                <MapPin className="w-6 h-6 text-primary" />
-                <span>{property.address}</span>
+                <Car className="w-6 h-6 text-primary" />
+                <span>{property.garages} Garages</span>
               </div>
+              <div className="flex items-center gap-2">
+                <Calendar className="w-6 h-6 text-primary" />
+                <span>Built in {property.year_built}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Building2 className="w-6 h-6 text-primary" />
+                <span>{property.city.name}</span>
+              </div>
+            </div>
+
+            {/* Additional Property Info */}
+            <div className="mt-8 space-y-6">
+              <div>
+                <h3 className="text-xl font-semibold mb-4">Location Details</h3>
+                <div className="grid gap-4">
+                  <div className="flex items-center gap-2">
+                    <MapPin className="w-5 h-5 text-primary" />
+                    <span>{property.address}</span>
+                  </div>
+                  {property.latitude && property.longitude && (
+                    <div className="text-sm text-gray-500">
+                      Coordinates: {property.latitude}, {property.longitude}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {property.amenities && property.amenities.length > 0 && (
+                <div>
+                  <h3 className="text-xl font-semibold mb-4">Amenities</h3>
+                  <div className="grid grid-cols-2 gap-3">
+                    {property.amenities.map((amenity: any, index: number) => (
+                      <div key={index} className="flex items-center gap-2">
+                        <CheckCircle2 className="w-5 h-5 text-primary" />
+                        <span>{amenity.name}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {property.features && property.features.length > 0 && (
+                <div>
+                  <h3 className="text-xl font-semibold mb-4">Features</h3>
+                  <div className="grid grid-cols-2 gap-3">
+                    {property.features.map((feature: any, index: number) => (
+                      <div key={index} className="flex items-center gap-2">
+                        <CheckCircle2 className="w-5 h-5 text-primary" />
+                        <span>{feature}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
-          {/* Image Gallery */}
-          <div className="grid grid-cols-2 gap-4">
-            {property.images?.map((img, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="relative aspect-square w-full overflow-hidden rounded-lg shadow-lg"
-              >
-                <Image
-                  src={img}
-                  alt={`Property image ${index + 1}`}
-                  fill
-                  className="object-cover"
-                />
-              </motion.div>
-            )) || (
-              <div className="col-span-2 text-center py-8 text-gray-500">
-                No additional images available
+          {/* Right Section - Additional Info */}
+          <div className="space-y-6">
+            {/* Status Card */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+              className="bg-white shadow-lg rounded-lg p-6"
+            >
+              <h3 className="text-xl font-semibold mb-4">Property Status</h3>
+              <div className="space-y-3">
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Listed On</span>
+                  <span className="font-medium">
+                    {formatDate(property.created_at)}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Property Type</span>
+                  <span className="font-medium">
+                    {property.property_type.name}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Status</span>
+                  <span className="font-medium">
+                    {property.property_status.name}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">City</span>
+                  <span className="font-medium">{property.city.name}</span>
+                </div>
               </div>
-            )}
-          </div>
-        </div>
+            </motion.div>
 
-        {/* Agent Info */}
-        {property.agent ? (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.4 }}
-            className="mt-10 p-6 bg-white shadow-lg rounded-lg flex items-center gap-6"
-          >
-            {property.agent.avatar && (
-              <div className="relative w-20 h-20">
-                <Image
-                  src={property.agent.avatar}
-                  alt={property.agent.name || "Agent"}
-                  fill
-                  className="rounded-full object-cover shadow-md"
+            {/* Action Buttons */}
+            <div className="flex gap-4">
+              <button className="flex-1 px-6 py-3 bg-primary text-white rounded-lg shadow hover:bg-primary/90 transition">
+                Schedule Viewing
+              </button>
+              <button className="p-3 border rounded-lg shadow hover:bg-gray-100 transition">
+                <Heart
+                  className={`w-6 h-6 ${
+                    property.is_favorited
+                      ? "fill-red-500 text-red-500"
+                      : "text-gray-700"
+                  }`}
                 />
-              </div>
-            )}
-            <div>
-              <h3 className="text-xl font-semibold">
-                {property.agent.name || "Agent Name Not Available"}
-              </h3>
-              <p className="text-gray-600">
-                Experience: {property.agent.experience || "N/A"} years
-              </p>
-              <p className="text-gray-600">
-                Phone: {property.agent.phone || "N/A"}
-              </p>
+              </button>
+              <button className="p-3 border rounded-lg shadow hover:bg-gray-100 transition">
+                <Share2 className="w-6 h-6 text-gray-700" />
+              </button>
             </div>
-          </motion.div>
-        ) : (
-          <div className="mt-10 p-6 bg-white shadow-lg rounded-lg text-center text-gray-500">
-            Agent information not available
           </div>
-        )}
-
-        {/* Action Buttons */}
-        <div className="mt-6 flex gap-4">
-          <button className="px-6 py-3 bg-primary text-white rounded-lg shadow hover:bg-primary-dark transition">
-            Contact Agent
-          </button>
-          <button className="p-3 border rounded-lg shadow hover:bg-gray-100 transition">
-            <Heart className="w-6 h-6 text-gray-700" />
-          </button>
-          <button className="p-3 border rounded-lg shadow hover:bg-gray-100 transition">
-            <Share2 className="w-6 h-6 text-gray-700" />
-          </button>
         </div>
       </div>
     </motion.div>
