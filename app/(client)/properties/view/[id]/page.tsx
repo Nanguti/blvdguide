@@ -127,10 +127,10 @@ export default function PropertyDetailPage() {
               </div>
               <div className="flex items-center gap-2 mt-2">
                 <Badge variant="secondary" className="bg-primary/10">
-                  {property.property_status.name}
+                  {property.property_status?.name || "N/A"}
                 </Badge>
                 <Badge variant="secondary" className="bg-primary/10">
-                  {property.property_type.name}
+                  {property.property_type?.name || "N/A"}
                 </Badge>
               </div>
               <p className="text-gray-600 mt-6">{property.description}</p>
@@ -159,7 +159,7 @@ export default function PropertyDetailPage() {
               </div>
               <div className="flex items-center gap-2">
                 <Building2 className="w-6 h-6 text-primary" />
-                <span>{property.city.name}</span>
+                <span>{property.city?.name || "N/A"}</span>
               </div>
             </div>
 
@@ -230,18 +230,20 @@ export default function PropertyDetailPage() {
                 <div className="flex justify-between">
                   <span className="text-gray-600">Property Type</span>
                   <span className="font-medium">
-                    {property.property_type.name}
+                    {property.property_type?.name || "N/A"}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Status</span>
                   <span className="font-medium">
-                    {property.property_status.name}
+                    {property.property_status?.name || "N/A"}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">City</span>
-                  <span className="font-medium">{property.city.name}</span>
+                  <span className="font-medium">
+                    {property.city?.name || "N/A"}
+                  </span>
                 </div>
               </div>
             </motion.div>
