@@ -10,9 +10,24 @@ interface SinglePropertyResponse {
   data: Property;
 }
 
-export type CreatePropertyData = Omit<Property, "id" | "featured_image"> & {
-  featured_image?: File | string | null;
-};
+export interface CreatePropertyData {
+  title: string;
+  description: string;
+  price: number;
+  property_type_id: number;
+  property_status_id: number;
+  city_id: number;
+  bedrooms: number | null;
+  bathrooms: number | null;
+  garages: number | null;
+  year_built: number | null;
+  area: number | null;
+  address: string;
+  latitude: number | null;
+  longitude: number | null;
+  published_status: string;
+  featured_image?: File;
+}
 
 export const propertyService = {
   // Get properties with filters
