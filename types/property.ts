@@ -17,10 +17,31 @@ export interface Property {
   propertyType?: { id: number; name: string };
   property_type?: { id: number; name: string };
   propertyStatus?: { id: number; name: string };
+  property_status?: { id: number; name: string };
   city?: { id: number; name: string };
   published_status: string;
   featured_image?: string | null;
   is_favorited?: boolean;
+  created_at: string;
+  updated_at: string;
+  deleted_at: string | null;
+  featured: number;
+  type: string;
+  amenities: Array<{
+    id: number;
+    name: string;
+    icon?: string;
+    category?: string;
+  }>;
+  features: string[];
+  user?: {
+    id: number;
+    name: string;
+    email: string;
+    phone?: string | null;
+    profile_image?: string | null;
+    experience_years?: number;
+  };
 }
 
 export interface PropertyFilter {

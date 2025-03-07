@@ -21,6 +21,13 @@ import Loading from "@/components/Loading";
 import { Badge } from "@/components/ui/badge";
 import { formatDate } from "@/lib/utils";
 
+interface PropertyAmenity {
+  id: number;
+  name: string;
+  icon?: string;
+  category?: string;
+}
+
 export default function PropertyDetailPage() {
   const params = useParams();
   const id = params.id as string;
@@ -177,8 +184,8 @@ export default function PropertyDetailPage() {
                 <div>
                   <h3 className="text-xl font-semibold mb-4">Amenities</h3>
                   <div className="grid grid-cols-2 gap-3">
-                    {property.amenities.map((amenity: any, index: number) => (
-                      <div key={index} className="flex items-center gap-2">
+                    {property.amenities.map((amenity: PropertyAmenity) => (
+                      <div key={amenity.id} className="flex items-center gap-2">
                         <CheckCircle2 className="w-5 h-5 text-primary" />
                         <span>{amenity.name}</span>
                       </div>
@@ -191,7 +198,7 @@ export default function PropertyDetailPage() {
                 <div>
                   <h3 className="text-xl font-semibold mb-4">Features</h3>
                   <div className="grid grid-cols-2 gap-3">
-                    {property.features.map((feature: any, index: number) => (
+                    {property.features.map((feature: string, index: number) => (
                       <div key={index} className="flex items-center gap-2">
                         <CheckCircle2 className="w-5 h-5 text-primary" />
                         <span>{feature}</span>
