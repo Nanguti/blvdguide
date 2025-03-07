@@ -68,19 +68,24 @@ function PropertyContent() {
 
   const property = data;
 
-  const getImageUrl = (imagePath: string | null | undefined) => {
+  const getImageUrl = (
+    imagePath: string | null | undefined,
+    isMedia: boolean = false
+  ) => {
     if (!imagePath) {
       const randomNum = Math.floor(Math.random() * 4) + 1;
       return `/images/featured/${randomNum}.jpg`;
     }
-    return `${mediaUrl}/${imagePath}`;
+    return isMedia
+      ? `${mediaUrl}/storage/${imagePath}`
+      : `${mediaUrl}/${imagePath}`;
   };
 
   // Prepare gallery images
   const galleryImages = [
     getImageUrl(property.featured_image),
     ...(property.media || []).map((image: MediaItem) =>
-      getImageUrl(`storage/${image.url}`)
+      getImageUrl(image.url, true)
     ),
   ].filter(Boolean);
 
