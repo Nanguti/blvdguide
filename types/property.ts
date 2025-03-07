@@ -34,6 +34,16 @@ export interface Property {
     category?: string;
   }>;
   features: string[];
+  media: Array<{
+    id: number;
+    property_id: number;
+    type: string;
+    url: string;
+    sort_order: number;
+    is_featured: boolean;
+    created_at: string;
+    updated_at: string;
+  }>;
   user?: {
     id: number;
     name: string;

@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import { useParams } from "next/navigation";
 import { motion } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
@@ -15,11 +16,12 @@ import {
   Building2,
   CheckCircle2,
 } from "lucide-react";
-import Image from "next/image";
+import PropertyGallery from "@/components/properties/PropertyGallery";
 import { propertyService } from "@/lib/services/property";
 import Loading from "@/components/Loading";
 import { Badge } from "@/components/ui/badge";
 import { formatDate } from "@/lib/utils";
+import { Property } from "@/types/property";
 
 interface PropertyAmenity {
   id: number;
@@ -28,43 +30,63 @@ interface PropertyAmenity {
   category?: string;
 }
 
-export default function PropertyDetailPage() {
+interface MediaItem {
+  id: number;
+  property_id: number;
+  type: string;
+  url: string;
+  sort_order: number;
+  is_featured: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+function PropertyContent() {
   const params = useParams();
   const id = params.id as string;
   const mediaUrl = process.env.NEXT_PUBLIC_BACKEND_BASE_URL;
 
-  const {
-    data: propertyData,
-    isLoading,
-    error,
-  } = useQuery({
+  const { data, isLoading, error } = useQuery<Property>({
     queryKey: ["property", id],
     queryFn: () => propertyService.getProperty(Number(id)),
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
-  const property = propertyData;
-
-  if (isLoading) {
+  if (isLoading || !data) {
     return <Loading />;
   }
 
-  if (error || !property) {
+  if (error) {
     return (
       <div className="text-center py-20">
         <h3 className="text-2xl font-semibold text-gray-900">
-          Property not found
+          Error loading property
         </h3>
       </div>
     );
   }
+
+  const property = data;
 
   const getImageUrl = (imagePath: string | null | undefined) => {
     if (!imagePath) {
       const randomNum = Math.floor(Math.random() * 4) + 1;
       return `/images/featured/${randomNum}.jpg`;
     }
-    return `${mediaUrl}/featured_images/${imagePath}`;
+    return `${mediaUrl}/${imagePath}`;
   };
+
+  // Prepare gallery images
+  const galleryImages = [
+    getImageUrl(property.featured_image),
+    ...(property.media || []).map((image: MediaItem) =>
+      getImageUrl(`storage/${image.url}`)
+    ),
+  ].filter(Boolean);
+
+  if (galleryImages.length === 0) {
+    galleryImages.push("/images/featured/1.jpg");
+  }
 
   return (
     <motion.div
@@ -73,41 +95,26 @@ export default function PropertyDetailPage() {
       transition={{ duration: 0.5 }}
       className="min-h-screen bg-gray-50"
     >
-      {/* Hero Section */}
-      <div className="relative w-full h-[60vh]">
-        <motion.div
-          initial={{ scale: 1.1 }}
-          animate={{ scale: 1 }}
-          transition={{ duration: 1, ease: "easeOut" }}
-          className="h-full"
-        >
-          <Image
-            src={getImageUrl(property.featured_image)}
-            alt={property.title}
-            fill
-            className="rounded-b-3xl shadow-lg object-cover"
-            priority
-          />
-        </motion.div>
-        <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center">
-          <div className="container px-4">
-            {property.featured === 1 && (
-              <Badge className="mb-4 bg-primary/90 hover:bg-primary">
-                Featured Property
-              </Badge>
-            )}
-            <h1 className="text-4xl md:text-5xl font-bold text-white drop-shadow-lg text-center">
-              {property.title}
-            </h1>
-            <p className="text-white/90 text-center mt-4 text-lg">
-              {property.address}
-            </p>
-          </div>
-        </div>
+      {/* Hero Section with Gallery */}
+      <div className="container mx-auto px-4 py-8">
+        <PropertyGallery images={galleryImages} title={property.title} />
       </div>
 
       {/* Content */}
       <div className="container mx-auto px-6 py-10">
+        {/* Property Title and Badge */}
+        <div className="text-center mb-8">
+          {property.featured === 1 && (
+            <Badge className="mb-4 bg-primary/90 hover:bg-primary">
+              Featured Property
+            </Badge>
+          )}
+          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+            {property.title}
+          </h1>
+          <p className="text-gray-600 text-lg">{property.address}</p>
+        </div>
+
         {/* Property Details */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
           {/* Left Section */}
@@ -270,5 +277,13 @@ export default function PropertyDetailPage() {
         </div>
       </div>
     </motion.div>
+  );
+}
+
+export default function PropertyDetailPage() {
+  return (
+    <Suspense fallback={<Loading />}>
+      <PropertyContent />
+    </Suspense>
   );
 }
