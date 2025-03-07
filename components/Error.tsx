@@ -28,7 +28,7 @@ export default function ErrorComponent({ error, reset }: ErrorProps) {
           Oops! Something went wrong
         </h2>
         <p className="text-gray-600 mb-6">
-          We're sorry for the inconvenience. Our team has been notified of the
+          We are sorry for the inconvenience. Our team has been notified of the
           issue.
         </p>
         <button
